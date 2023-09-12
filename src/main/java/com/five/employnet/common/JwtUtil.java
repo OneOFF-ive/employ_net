@@ -1,12 +1,16 @@
 package com.five.employnet.common;
 
 import io.jsonwebtoken.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class JwtUtil {
-    private static final String SECRET_KEY = "your-secret-key"; // 更换为自己的密钥
-    private static final long EXPIRATION_TIME = 864_000_000; // 10天（以毫秒为单位）
+
+    private static final AnnotationConfigApplicationContext applicationContext = BaseContext.getApplicationContext();
+    private static final String SECRET_KEY = applicationContext.getEnvironment().getProperty("employNet.SECRET_KEY");
+    private static final long EXPIRATION_TIME = Long.parseLong(Objects.requireNonNull(applicationContext.getEnvironment().getProperty("employNet.EXPIRATION_TIME")));
 
     public static String generateToken(String username) {
         Date expirationDate = new Date(System.currentTimeMillis() + EXPIRATION_TIME);

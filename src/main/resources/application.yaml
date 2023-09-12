@@ -1,2 +1,7 @@
 server:
   port: 80
+
+
+employNet:
+  SECRET_KEY: "LTAI5tK9FNDQABxM4Rtu3vhE"
+  EXPIRATION_TIME: 864000000
