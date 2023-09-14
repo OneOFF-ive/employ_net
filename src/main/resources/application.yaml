@@ -1,7 +1,25 @@
 server:
   port: 80
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://139.196.48.244:4407/employNet
+      username: wu
+      password: Wzh913000
+  session:
+    store-type: none
 
+mybatis-plus:
+  configuration:
+    #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: ASSIGN_ID
+  mapper-locations: "classpath:/mapper/**/*.xml"
 
-employNet:
-  SECRET_KEY: "LTAI5tK9FNDQABxM4Rtu3vhE"
-  EXPIRATION_TIME: 864000000
+jwt:
+  secret-key: "LTAI5tK9FNDQABxM4Rtu3vhE"
+  expiration-time: 864000000  #一天
