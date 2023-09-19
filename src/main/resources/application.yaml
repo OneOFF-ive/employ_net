@@ -9,6 +9,11 @@ spring:
       password: Wzh913000
   session:
     store-type: none
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 
 mybatis-plus:
   configuration:
@@ -28,4 +33,4 @@ wechat:
   app-url: "https://api.weixin.qq.com/sns/jscode2session"
   app-id: "wx843ce82edd62d18a"
   app-secret: "3f07f2208a5bca557a121a2e82fb9781"
-  path: "D:\\reggie\\"
+  avatar-base-path: "D:\\EmployNet\\"

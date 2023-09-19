@@ -21,8 +21,6 @@ public class UserController {
     private final UserService userService;
     private final WeChatService weChatService;
     private final JwtUtil jwtUtil;
-    @Value("${wechat.path}")
-    private String basePath;
 
     public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil) {
         this.userService = userService;
