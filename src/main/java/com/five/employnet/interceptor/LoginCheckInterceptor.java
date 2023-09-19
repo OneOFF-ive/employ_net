@@ -28,6 +28,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            log.info("请求{}通过", request.getRequestURI());
             // 使用Bearer令牌认证，提取令牌部分
             String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
 

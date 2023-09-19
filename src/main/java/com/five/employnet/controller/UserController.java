@@ -30,13 +30,14 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/register")
-    public R<String> register(HttpServletRequest request, @RequestBody User user) {
+    @PostMapping("/update")
+    public R<String> update(HttpServletRequest request, @RequestBody User user) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
         Long userId = Long.valueOf(jwtUtil.extractUsername(authToken));
-//        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-//        queryWrapper.eq(User::getId, userId);
+        user.setId(userId);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getId, userId);
         userService.updateById(user);
         return R.success("success");
     }
@@ -79,12 +80,8 @@ public class UserController {
     @PostMapping("/test")
     public String test(@RequestBody Map<String, String> requestBody) {
         String code = requestBody.get("code");
-
         log.info(code);
-
-        String res = weChatService.test(code);
-        log.info(res);
-        return res;
+        return code;
     }
 
 }

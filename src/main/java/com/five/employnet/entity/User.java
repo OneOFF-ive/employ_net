@@ -21,7 +21,7 @@ public class User implements Serializable {
     private String openId;
     private String sessionKey;
     private String nickName;
-    private int gender; //0：男生；1：女生
+    private String gender;
     private String avatarUrl;
     private String name;
     @TableField(exist = false)
