@@ -8,11 +8,11 @@ spring:
       username: wu
       password: Wzh913000
   session:
-    store-type: none
+    store-type: none    #使用jwt进行身份验证，不在保存session
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 10MB   #文件传输大小限制
+      max-request-size: 10MB    #请求大小限制
 
 
 mybatis-plus:
@@ -22,15 +22,16 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      id-type: ASSIGN_ID
+      id-type: ASSIGN_ID      #自动雪花填充id
   mapper-locations: "classpath:/mapper/**/*.xml"
 
 jwt:
   secret-key: "LTAI5tK9FNDQABxM4Rtu3vhE"
-  expiration-time: 864000000  #一天
+  expiration-time: 8640000000  #十天
 
 wechat:
   app-url: "https://api.weixin.qq.com/sns/jscode2session"
   app-id: "wx843ce82edd62d18a"
   app-secret: "3f07f2208a5bca557a121a2e82fb9781"
-  avatar-base-path: "D:\\EmployNet\\"
+  avatar-base-path: "D:\\EmployNet\\avatar\\"   #头像存储位置
+  annex-base-path: "D:\\EmployNet\\annex\\"     #文件存储位置

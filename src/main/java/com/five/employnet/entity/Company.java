@@ -32,5 +32,5 @@ public class Company implements Serializable {
     private String linkPerson;     //联系人
     private String phoneNumber;
     @TableField(exist = false)
-    private List<Annex> fileList;   //附件列表
+    private List<Annex> annexList;   //附件列表
 }
