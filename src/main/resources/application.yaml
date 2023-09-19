@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
 spring:
   datasource:
     druid:
@@ -23,3 +23,9 @@ mybatis-plus:
 jwt:
   secret-key: "LTAI5tK9FNDQABxM4Rtu3vhE"
   expiration-time: 864000000  #一天
+
+wechat:
+  app-url: "https://api.weixin.qq.com/sns/jscode2session"
+  app-id: "wx843ce82edd62d18a"
+  app-secret: "3f07f2208a5bca557a121a2e82fb9781"
+  path: "D:\\reggie\\"

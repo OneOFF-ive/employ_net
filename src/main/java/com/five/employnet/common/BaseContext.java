@@ -10,9 +10,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.util.Properties;
 
-/**
- * 基于ThreadLocal封装工具类，用于保存和获取Employee ID
- */
 public class BaseContext {
 
     static public AnnotationConfigApplicationContext getApplicationContext() {
