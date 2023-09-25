@@ -2,7 +2,9 @@ package com.five.employnet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
+import com.five.employnet.entity.JobMessage;
 import com.five.employnet.entity.User;
+import com.five.employnet.service.JobMessageService;
 import com.five.employnet.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -16,14 +18,20 @@ class EmployNetApplicationTests {
     UserService userService;
     @Autowired
     JwtUtil jwtUtil;
+    @Autowired
+    JobMessageService jobMessageService;
+
     @Test
     void contextLoads() {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getOpenId, "oX6_d5fOfDXSO1PsGYRpbBS7sXOo");
-        User user = userService.getOne(queryWrapper);
-        Long id = user.getId();
-        String token = jwtUtil.generateToken(String.valueOf(id));
-        log.info(token);
+        JobMessage jobMessage = new JobMessage();
+        jobMessage.setJobId(1L);
+        jobMessage.setDetail("写代码");
+        jobMessage.setAddress("里根学院");
+        jobMessage.setWelfare("没有福利");
+        jobMessage.setDuty("玩的开心");
+        jobMessage.setSalary("无");
+        jobMessage.setRequire("11");
+        jobMessageService.save(jobMessage);
     }
 
 }

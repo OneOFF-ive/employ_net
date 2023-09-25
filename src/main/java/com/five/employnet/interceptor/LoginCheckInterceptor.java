@@ -28,13 +28,13 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            log.info("请求{}通过", request.getRequestURI());
             // 使用Bearer令牌认证，提取令牌部分
             String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
 
             // 在这里可以对令牌进行JWT解析等
             // 如果验证成功，可以继续处理请求；如果验证失败，返回适当的响应
             if (jwtUtil.validateToken(authToken)) {
+                log.info("请求{}通过", request.getRequestURI());
                 return true; // 继续处理请求
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

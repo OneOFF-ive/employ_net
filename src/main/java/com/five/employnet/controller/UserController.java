@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -76,10 +78,11 @@ public class UserController {
     }
 
     @PostMapping("/test")
-    public String test(@RequestBody Map<String, String> requestBody) {
-        String code = requestBody.get("code");
-        log.info(code);
-        return code;
+    public List<String> test(@RequestBody Map<String, String> requestBody) {
+        List<String> res = new ArrayList<>();
+        res.add("12");
+        res.add("123");
+        return res;
     }
 
 }

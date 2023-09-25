@@ -1,14 +1,13 @@
 package com.five.employnet.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.beans.Transient;
-import java.io.File;
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,15 +19,13 @@ public class User implements Serializable {
     private Long id;
     private String openId;
     private String sessionKey;
-    private String nickName;
-    private String gender;
-    private String avatarUrl;
+    private String sex;
     private String name;
-    @TableField(exist = false)
-    private MultipartFile profileUrl;
+    private String profileUrl;
     private String phoneNumber;
-    private LocalDateTime birthday;
+    private LocalDate birthday;
     private String marriage;
     private String education;
     private String experience;
+    private String userClass;
 }
