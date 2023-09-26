@@ -1,5 +1,6 @@
 package com.five.employnet.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.five.employnet.entity.EductionExperience;
 import com.five.employnet.entity.Experience;
@@ -49,5 +50,23 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         Experience experience = talent.getExperience();
         experience.setTalent_id(talentId);
         experienceService.saveOneExperience(experience);
+    }
+
+    @Override
+    public void completeTalent(Talent talent) {
+        String talentId = talent.getTalent_id();
+
+        LambdaQueryWrapper<EductionExperience> eductionExperienceQueryWrapper = new LambdaQueryWrapper<>();
+        eductionExperienceQueryWrapper.eq(EductionExperience::getTalent_id, talentId);
+        List<EductionExperience> eductionExperienceList = eductionExperienceService.list(eductionExperienceQueryWrapper);
+        talent.setEduction_experience(eductionExperienceList);
+
+        LambdaQueryWrapper<JobIntention> jobIntentionQueryWrapper = new LambdaQueryWrapper<>();
+        jobIntentionQueryWrapper.eq(JobIntention::getTalent_id, talentId);
+        List<JobIntention> jobIntentionList = jobIntentionService.list(jobIntentionQueryWrapper);
+        talent.setJob_intention(jobIntentionList);
+
+        Experience experience = experienceService.getOneByTalentId(talentId);
+        talent.setExperience(experience);
     }
 }
