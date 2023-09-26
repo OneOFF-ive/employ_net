@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class Talent implements Serializable {
@@ -33,11 +34,11 @@ public class Talent implements Serializable {
     private String user_class;
 
     @TableField(exist = false)
-    private String eduction_experience;
+    private List<EductionExperience> eduction_experience;
 
     @TableField(exist = false)
-    private String experience;
+    private Experience experience;
 
     @TableField(exist = false)
-    private String job_intention;
+    private List<JobIntention> job_intention;
 }
