@@ -3,11 +3,13 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
+import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.User;
 import com.five.employnet.service.UserService;
 import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,15 +37,15 @@ public class UserController {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
         String userId = jwtUtil.extractUsername(authToken);
-        user.setId(userId);
+        user.setUser_id(userId);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getId, userId);
+        queryWrapper.eq(User::getUser_id, userId);
         userService.updateById(user);
         return R.success("success");
     }
 
     @RequestMapping("/login")
-    public R<User> login(@RequestBody Map<String, String> requestBody) {
+    public R<UserDto> login(@RequestBody Map<String, String> requestBody) {
         String code = requestBody.get("code");
 
         log.info(code);
@@ -66,11 +68,11 @@ public class UserController {
                 log.info(user.toString());
                 userService.save(user);
             }
-            user.setOpenId("");
-            user.setSessionKey("");
-            R<User> res = R.success(user);
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+            R<UserDto> res = R.success(userDto);
 
-            String userId = user.getId();
+            String userId = user.getUser_id();
             String token = jwtUtil.generateToken(String.valueOf(userId));
             res.add("token", token);
             return res;

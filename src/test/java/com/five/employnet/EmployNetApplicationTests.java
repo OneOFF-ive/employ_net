@@ -30,7 +30,7 @@ class EmployNetApplicationTests {
         jobMessage.setWelfare("没有福利");
         jobMessage.setDuty("玩的开心");
         jobMessage.setSalary("无");
-        jobMessage.setRequire("11");
+
         jobMessageService.save(jobMessage);
     }
 

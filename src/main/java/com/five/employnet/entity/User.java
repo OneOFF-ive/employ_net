@@ -16,7 +16,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId
-    private String id;
+    private String user_id;
     private String openId;
     private String sessionKey;
     private String sex;
