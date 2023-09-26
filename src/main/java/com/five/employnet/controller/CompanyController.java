@@ -60,7 +60,7 @@ public class CompanyController {
             company.setSessionKey("");
             R<Company> res = R.success(company);
 
-            Long companyId = company.getId();
+            String companyId = company.getCompany_id();
             String token = jwtUtil.generateToken(String.valueOf(companyId));
             res.add("token", token);
             return res;
@@ -71,10 +71,10 @@ public class CompanyController {
     public R<String> update(HttpServletRequest request, @RequestBody Company company) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        Long companyId = Long.valueOf(jwtUtil.extractUsername(authToken));
-        company.setId(companyId);
+        String companyId = jwtUtil.extractUsername(authToken);
+        company.setCompany_id(companyId);
         LambdaQueryWrapper<Company> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Company::getId, companyId);
+        queryWrapper.eq(Company::getCompany_id, companyId);
         companyService.updateById(company);
         return R.success("success");
     }

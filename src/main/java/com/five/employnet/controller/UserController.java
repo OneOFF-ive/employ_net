@@ -34,7 +34,7 @@ public class UserController {
     public R<String> update(HttpServletRequest request, @RequestBody User user) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        Long userId = Long.valueOf(jwtUtil.extractUsername(authToken));
+        String userId = jwtUtil.extractUsername(authToken);
         user.setId(userId);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getId, userId);
@@ -70,7 +70,7 @@ public class UserController {
             user.setSessionKey("");
             R<User> res = R.success(user);
 
-            Long userId = user.getId();
+            String userId = user.getId();
             String token = jwtUtil.generateToken(String.valueOf(userId));
             res.add("token", token);
             return res;

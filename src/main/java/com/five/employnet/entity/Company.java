@@ -14,7 +14,7 @@ public class Company implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId
-    private Long id;
+    private String company_id;
     private String openId;
     private String sessionKey;
     private String nickName;
