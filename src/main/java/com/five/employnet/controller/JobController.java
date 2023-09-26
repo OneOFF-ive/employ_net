@@ -41,7 +41,7 @@ public class JobController {
 
         List<Job> jobList = pageInfo.getRecords();
         for (Job job: jobList) {
-            Long jobId = job.getJobId();
+            String jobId = job.getJobId();
             LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(JobMessage::getJobId, jobId);
             JobMessage jobMessage = jobMessageService.getOne(queryWrapper);

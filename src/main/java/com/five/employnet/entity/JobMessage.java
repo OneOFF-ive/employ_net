@@ -12,8 +12,8 @@ public class JobMessage implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @TableId
-    private Long id;
-    private Long jobId;
+    private String id;
+    private String jobId;
     private String detail;
     private String address;
     private String welfare;

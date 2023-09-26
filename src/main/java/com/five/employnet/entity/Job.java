@@ -13,8 +13,8 @@ public class Job implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @TableId
-    private Long jobId;
-    private Long companyId;
+    private String jobId;
+    private String companyId;
     private String title;
     private String salary;
     private LocalDate time;

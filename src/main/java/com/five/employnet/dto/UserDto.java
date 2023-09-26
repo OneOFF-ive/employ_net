@@ -1,11 +1,13 @@
 package com.five.employnet.dto;
 
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
 
 import java.time.LocalDate;
 
+@Data
 public class UserDto {
-    @TableId
+
     private String id;
     private String sex;
     private String name;
