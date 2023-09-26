@@ -12,8 +12,8 @@ public class Talent implements Serializable {
 
     @TableId
     private String talent_id;
-    private String openId;
-    private String sessionKey;
+    private String open_id;
+    private String session_key;
     private int age;
     private String count_Number;
     private String count_Password;

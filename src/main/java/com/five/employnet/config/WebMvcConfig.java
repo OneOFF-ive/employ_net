@@ -30,12 +30,12 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         return new RestTemplate();
     }
 
-//    @Override
-//    protected void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new LoginCheckInterceptor(jwtUtil))
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/user/login", "/company/login");
-//    }
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginCheckInterceptor(jwtUtil))
+                .addPathPatterns("/**")
+                .excludePathPatterns("/user/login", "/company/login");
+    }
 
     @Override
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {

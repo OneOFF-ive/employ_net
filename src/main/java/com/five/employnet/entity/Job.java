@@ -13,8 +13,9 @@ public class Job implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     @TableId
-    private String jobId;
-    private String companyId;
+//    @JsonProperty("job_id")
+    private String job_id;
+    private String company_id;
     private String title;
     private String salary;
     private LocalDate time;
@@ -23,7 +24,7 @@ public class Job implements Serializable {
     private String jobLab;
     private String business;
     private String company;
-    private String avatarUrl;
+    private String avatar_url;
     @TableField(exist = false)
-    private JobMessage messageDetail;
+    private JobMessage message_detail;
 }

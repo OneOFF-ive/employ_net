@@ -10,7 +10,6 @@ import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,12 +58,12 @@ public class UserController {
             String sessionKey = (String) responseBody.get("session_key");
 
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(User::getOpenId, openId);
+            queryWrapper.eq(User::getOpen_id, openId);
             User user = userService.getOne(queryWrapper);
             if (user == null) {
                 user = new User();
-                user.setOpenId(openId);
-                user.setSessionKey(sessionKey);
+                user.setOpen_id(openId);
+                user.setSession_key(sessionKey);
                 log.info(user.toString());
                 userService.save(user);
             }

@@ -4,12 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Company;
-import com.five.employnet.entity.User;
 import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,17 +45,17 @@ public class CompanyController {
             String sessionKey = (String) responseBody.get("session_key");
 
             LambdaQueryWrapper<Company> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Company::getOpenId, openId);
+            queryWrapper.eq(Company::getOpen_id, openId);
             Company company = companyService.getOne(queryWrapper);
             if (company == null) {
                 company = new Company();
-                company.setOpenId(openId);
-                company.setSessionKey(sessionKey);
+                company.setOpen_id(openId);
+                company.setSession_key(sessionKey);
                 log.info(company.toString());
                 companyService.save(company);
             }
-            company.setOpenId("");
-            company.setSessionKey("");
+            company.setOpen_id("");
+            company.setSession_key("");
             R<Company> res = R.success(company);
 
             String companyId = company.getCompany_id();

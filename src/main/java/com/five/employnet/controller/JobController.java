@@ -41,11 +41,11 @@ public class JobController {
 
         List<Job> jobList = pageInfo.getRecords();
         for (Job job: jobList) {
-            String jobId = job.getJobId();
+            String jobId = job.getJob_id();
             LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(JobMessage::getJobId, jobId);
+            queryWrapper.eq(JobMessage::getJob_id, jobId);
             JobMessage jobMessage = jobMessageService.getOne(queryWrapper);
-            job.setMessageDetail(jobMessage);
+            job.setMessage_detail(jobMessage);
         }
         return R.success(pageInfo);
     }

@@ -22,8 +22,8 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
     @Transactional
     public void saveJob(Job job) {
         this.save(job);
-        JobMessage jobMessage = job.getMessageDetail();
-        jobMessage.setJobId(job.getJobId());
+        JobMessage jobMessage = job.getMessage_detail();
+        jobMessage.setJob_id(job.getJob_id());
         jobMessageService.save(jobMessage);
     }
 }

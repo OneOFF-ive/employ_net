@@ -1,6 +1,5 @@
 package com.five.employnet.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
@@ -13,7 +12,7 @@ public class JobMessage implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId
     private String id;
-    private String jobId;
+    private String job_id;
     private String detail;
     private String address;
     private String welfare;

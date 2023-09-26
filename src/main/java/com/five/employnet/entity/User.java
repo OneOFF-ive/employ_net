@@ -1,14 +1,11 @@
 package com.five.employnet.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 public class User implements Serializable {
@@ -17,15 +14,15 @@ public class User implements Serializable {
 
     @TableId
     private String user_id;
-    private String openId;
-    private String sessionKey;
+    private String open_id;
+    private String session_key;
     private String sex;
     private String name;
-    private String profileUrl;
-    private String phoneNumber;
+    private String profile_url;
+    private String phone_number;
     private LocalDate birthday;
     private String marriage;
     private String education;
     private String experience;
-    private String userClass;
+    private String user_class;
 }
