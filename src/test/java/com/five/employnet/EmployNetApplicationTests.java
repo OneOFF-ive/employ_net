@@ -3,6 +3,7 @@ package com.five.employnet;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.entity.Job;
+import com.five.employnet.entity.JobMessage;
 import com.five.employnet.entity.User;
 import com.five.employnet.service.JobMessageService;
 import com.five.employnet.service.JobService;
@@ -36,10 +37,10 @@ class EmployNetApplicationTests {
 
     @Test
     void test() {
-        LambdaQueryWrapper<Job> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Job::getTitle, "软件开发专员1");
-        List<Job> jobList = jobService.list(queryWrapper);
-        log.info(jobList.toString());
+        LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobMessage::getJob_id, "1706230260460365474");
+        JobMessage jobMessage = jobMessageService.getOne(queryWrapper);
+        log.info(jobMessage.toString());
     }
 
 }
