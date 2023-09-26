@@ -4,5 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.five.employnet.entity.Experience;
 
 public interface ExperienceService extends IService<Experience> {
-    public Experience saveOneExperience(Experience experience);
+    void saveOneExperience(Experience experience);
+    Experience getOneByTalentId(String talentID);
 }

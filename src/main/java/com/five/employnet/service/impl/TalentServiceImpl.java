@@ -1,7 +1,6 @@
 package com.five.employnet.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.five.employnet.common.R;
 import com.five.employnet.entity.EductionExperience;
 import com.five.employnet.entity.Experience;
 import com.five.employnet.entity.JobIntention;
@@ -12,6 +11,7 @@ import com.five.employnet.service.ExperienceService;
 import com.five.employnet.service.JobIntentionService;
 import com.five.employnet.service.TalentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,7 +29,8 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     }
 
     @Override
-    public Talent saveOneTalent(Talent talent) {
+    @Transactional
+    public void saveOneTalent(Talent talent) {
         this.save(talent);
         String talentId = talent.getTalent_id();
 
@@ -48,6 +49,5 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         Experience experience = talent.getExperience();
         experience.setTalent_id(talentId);
         experienceService.saveOneExperience(experience);
-        return talent;
     }
 }

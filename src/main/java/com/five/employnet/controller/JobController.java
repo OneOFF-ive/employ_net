@@ -3,7 +3,6 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.R;
-import com.five.employnet.dto.JobDto;
 import com.five.employnet.entity.Job;
 import com.five.employnet.entity.JobMessage;
 import com.five.employnet.service.JobMessageService;
@@ -34,7 +33,6 @@ public class JobController {
     @GetMapping("/page")
     public R<Page<Job>> getPage(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, String prompt) {
         Page<Job> pageInfo = new Page<>(page, pageSize);
-        Page<JobDto> jobDtoPage = new Page<>();
         LambdaQueryWrapper<Job> jobLambdaQueryWrapper =new LambdaQueryWrapper<>();
         jobLambdaQueryWrapper.eq(prompt != null, Job::getJob_lab, prompt);
         jobService.page(pageInfo, jobLambdaQueryWrapper);
@@ -50,12 +48,4 @@ public class JobController {
         return R.success(pageInfo);
     }
 
-
-    @PostMapping("/test")
-    public R<Job> test(@RequestBody Job job) {
-        log.info(job.toString());
-        jobService.saveJob(job);
-        log.info(job.toString());
-        return R.success(job);
-    }
 }
