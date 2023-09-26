@@ -2,14 +2,14 @@ package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Job;
-import com.five.employnet.entity.JobMessage;
-import com.five.employnet.service.JobMessageService;
 import com.five.employnet.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -17,15 +17,19 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
-    private final JobMessageService jobMessageService;
+    final private JwtUtil jwtUtil;
 
-    public JobController(JobService jobService, JobMessageService jobMessageService) {
+    public JobController(JobService jobService, JwtUtil jwtUtil) {
         this.jobService = jobService;
-        this.jobMessageService = jobMessageService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
-    public R<Job> save(@RequestBody Job job) {
+    public R<Job> save(HttpServletRequest request, @RequestBody Job job) {
+        String authorizationHeader = request.getHeader("Authorization");
+        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+        String companyId = jwtUtil.extractUsername(authToken);
+        job.setCompany_id(companyId);
         jobService.saveJob(job);
         return R.success(job);
     }
@@ -39,11 +43,7 @@ public class JobController {
 
         List<Job> jobList = pageInfo.getRecords();
         for (Job job: jobList) {
-            String jobId = job.getJob_id();
-            LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(JobMessage::getJob_id, jobId);
-            JobMessage jobMessage = jobMessageService.getOne(queryWrapper);
-            job.setMessage_detail(jobMessage);
+            jobService.completeJob(job);
         }
         return R.success(pageInfo);
     }
