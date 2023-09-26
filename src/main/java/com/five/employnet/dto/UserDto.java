@@ -8,14 +8,14 @@ import java.time.LocalDate;
 @Data
 public class UserDto {
 
-    private String id;
+    private String user_id;
     private String sex;
     private String name;
-    private String profileUrl;
-    private String phoneNumber;
+    private String profile_url;
+    private String phone_number;
     private LocalDate birthday;
     private String marriage;
     private String education;
     private String experience;
-    private String userClass;
+    private String user_class;
 }

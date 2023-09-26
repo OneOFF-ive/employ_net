@@ -21,7 +21,7 @@ public class Job implements Serializable {
     private LocalDate time;
     private int number;
     private String lab;
-    private String jobLab;
+    private String job_lab;
     private String business;
     private String company;
     private String avatar_url;

@@ -36,7 +36,7 @@ public class JobController {
         Page<Job> pageInfo = new Page<>(page, pageSize);
         Page<JobDto> jobDtoPage = new Page<>();
         LambdaQueryWrapper<Job> jobLambdaQueryWrapper =new LambdaQueryWrapper<>();
-        jobLambdaQueryWrapper.eq(prompt != null, Job::getJobLab, prompt);
+        jobLambdaQueryWrapper.eq(prompt != null, Job::getJob_lab, prompt);
         jobService.page(pageInfo, jobLambdaQueryWrapper);
 
         List<Job> jobList = pageInfo.getRecords();
