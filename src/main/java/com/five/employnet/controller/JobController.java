@@ -37,12 +37,15 @@ public class JobController {
     @GetMapping("/page")
     public R<Page<Job>> getPage(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, String prompt) {
         Page<Job> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Job> jobLambdaQueryWrapper =new LambdaQueryWrapper<>();
-        jobLambdaQueryWrapper.eq(prompt != null, Job::getJob_lab, prompt);
+        LambdaQueryWrapper<Job> jobLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        jobLambdaQueryWrapper
+                .like(prompt != null, Job::getJob_lab, prompt)
+                .or()
+                .like(prompt != null, Job::getTitle, prompt);
         jobService.page(pageInfo, jobLambdaQueryWrapper);
 
         List<Job> jobList = pageInfo.getRecords();
-        for (Job job: jobList) {
+        for (Job job : jobList) {
             jobService.completeJob(job);
         }
         return R.success(pageInfo);

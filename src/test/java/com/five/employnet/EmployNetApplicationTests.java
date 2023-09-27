@@ -37,10 +37,8 @@ class EmployNetApplicationTests {
 
     @Test
     void test() {
-        LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(JobMessage::getJob_id, "1706230260460365474");
-        JobMessage jobMessage = jobMessageService.getOne(queryWrapper);
-        log.info(jobMessage.toString());
+        User user = new User();
+        user.setUser_id(null);
     }
 
 }
