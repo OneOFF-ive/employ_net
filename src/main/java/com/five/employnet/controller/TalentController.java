@@ -30,7 +30,7 @@ public class TalentController {
     public R<Talent> save(HttpServletRequest request, @RequestBody Talent talent) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String userId = jwtUtil.extractUsername(authToken);
+        String userId = jwtUtil.extractUserId(authToken);
         talent.setUser_id(userId);
         talentService.saveOneTalent(talent);
         return R.success(talent);

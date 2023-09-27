@@ -28,7 +28,7 @@ public class JobController {
     public R<Job> save(HttpServletRequest request, @RequestBody Job job) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String companyId = jwtUtil.extractUsername(authToken);
+        String companyId = jwtUtil.extractUserId(authToken);
         job.setCompany_id(companyId);
         jobService.saveJob(job);
         return R.success(job);

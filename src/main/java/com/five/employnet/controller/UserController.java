@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.dto.UserDto;
+import com.five.employnet.entity.Job;
 import com.five.employnet.entity.User;
+import com.five.employnet.entity.UserCollection;
+import com.five.employnet.service.JobService;
+import com.five.employnet.service.UserCollectionService;
 import com.five.employnet.service.UserService;
 import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +28,22 @@ public class UserController {
     private final UserService userService;
     private final WeChatService weChatService;
     private final JwtUtil jwtUtil;
+    private final UserCollectionService userCollectionService;
+    private final JobService jobService;
 
-    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil) {
+    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, UserCollectionService userCollectionService, JobService jobService) {
         this.userService = userService;
         this.weChatService = weChatService;
         this.jwtUtil = jwtUtil;
+        this.userCollectionService = userCollectionService;
+        this.jobService = jobService;
     }
 
     @PostMapping("/update")
     public R<String> update(HttpServletRequest request, @RequestBody User user) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String userId = jwtUtil.extractUsername(authToken);
+        String userId = jwtUtil.extractUserId(authToken);
         user.setUser_id(userId);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUser_id, userId);
@@ -86,6 +94,24 @@ public class UserController {
         return res;
     }
 
+    @GetMapping("/collection")
+    public R<List<Job>> getUserCollection(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+        String userId = jwtUtil.extractUserId(authToken);
+
+        LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserCollection::getUser_id, userId);
+        List<UserCollection> userCollections = userCollectionService.list(queryWrapper);
+        List<String> jobIdList = userCollections.stream().map(
+                UserCollection::getJob_id
+        ).toList();
+        List<Job> res = jobService.listByIds(jobIdList);
+        for (Job job: res) {
+            jobService.completeJob(job);
+        }
+        return R.success(res);
+    }
 }
 
 

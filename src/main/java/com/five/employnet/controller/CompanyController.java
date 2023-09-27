@@ -69,7 +69,7 @@ public class CompanyController {
     public R<String> update(HttpServletRequest request, @RequestBody Company company) {
         String authorizationHeader = request.getHeader("Authorization");
         String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String companyId = jwtUtil.extractUsername(authToken);
+        String companyId = jwtUtil.extractUserId(authToken);
         company.setCompany_id(companyId);
         LambdaQueryWrapper<Company> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Company::getCompany_id, companyId);
