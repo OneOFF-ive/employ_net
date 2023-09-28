@@ -34,7 +34,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptor(jwtUtil))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login", "/company/login");
+                .excludePathPatterns("/user/login", "/company/login", "/common/*");
     }
 
     @Override

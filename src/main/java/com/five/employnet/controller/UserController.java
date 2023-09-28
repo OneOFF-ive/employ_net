@@ -1,6 +1,7 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.dto.UserDto;
@@ -14,9 +15,11 @@ import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.invoke.LambdaMetafactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +44,11 @@ public class UserController {
 
     @PostMapping("/update")
     public R<String> update(HttpServletRequest request, @RequestBody User user) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String userId = jwtUtil.extractUserId(authToken);
+//        String authorizationHeader = request.getHeader("Authorization");
+//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+//        String userId = jwtUtil.extractUserId(authToken);
+
+        String userId = BaseContext.getCurrentId();
         user.setUser_id(userId);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUser_id, userId);
@@ -86,19 +91,12 @@ public class UserController {
         }
     }
 
-    @PostMapping("/test")
-    public List<String> test(@RequestBody Map<String, String> requestBody) {
-        List<String> res = new ArrayList<>();
-        res.add("12");
-        res.add("123");
-        return res;
-    }
-
-    @GetMapping("/collection")
+    @GetMapping("/job_collection")
     public R<List<Job>> getUserCollection(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String userId = jwtUtil.extractUserId(authToken);
+//        String authorizationHeader = request.getHeader("Authorization");
+//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+//        String userId = jwtUtil.extractUserId(authToken);
+        String userId = BaseContext.getCurrentId();
 
         LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserCollection::getUser_id, userId);
@@ -106,12 +104,54 @@ public class UserController {
         List<String> jobIdList = userCollections.stream().map(
                 UserCollection::getJob_id
         ).toList();
-        List<Job> res = jobService.listByIds(jobIdList);
-        for (Job job: res) {
-            jobService.completeJob(job);
+        List<Job> resInfo = new ArrayList<>();
+        if (!jobIdList.isEmpty()) {
+            resInfo = jobService.listByIds(jobIdList);
+            for (Job job : resInfo) {
+                jobService.completeJob(job);
+            }
         }
-        return R.success(res);
+        return R.success(resInfo);
     }
+
+    @PostMapping("collect_job")
+    public R<String> collectJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
+        try {
+//            String authorizationHeader = request.getHeader("Authorization");
+//            String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+//            String userId = jwtUtil.extractUserId(authToken);
+            String userId = BaseContext.getCurrentId();
+            String jobId = requestBody.get("job_id");
+            UserCollection userCollection = new UserCollection();
+            userCollection.setUser_id(userId);
+            userCollection.setJob_id(jobId);
+            userCollectionService.save(userCollection);
+        } catch (DataIntegrityViolationException e) {
+            return R.error("收藏失败");
+        }
+        return R.success("收藏成功");
+    }
+
+    @DeleteMapping("delete_job")
+    public R<String> deleteJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
+        try {
+//            String authorizationHeader = request.getHeader("Authorization");
+//            String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+//            String userId = jwtUtil.extractUserId(authToken);
+            String userId = BaseContext.getCurrentId();
+            String jobId = requestBody.get("job_id");
+
+            LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper
+                    .eq(UserCollection::getUser_id, userId)
+                    .eq(UserCollection::getJob_id, jobId);
+            userCollectionService.remove(queryWrapper);
+        } catch (Exception e) {
+            return R.error("删除失败");
+        }
+        return R.error("删除成功");
+    }
+
 }
 
 

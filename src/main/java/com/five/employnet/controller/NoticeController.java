@@ -25,12 +25,6 @@ public class NoticeController {
         this.noticeMessageService = noticeMessageService;
     }
 
-    @PostMapping("/test")
-    public Notice test(@RequestBody Notice notice) {
-
-        return notice;
-    }
-
     @PostMapping("/save")
     public R<Notice> save(@RequestBody Notice notice) {
         noticeService.saveOneNotice(notice);

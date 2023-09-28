@@ -12,6 +12,20 @@ import java.util.Properties;
 
 public class BaseContext {
 
+    static private final ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
+    static public String getCurrentId() {
+        return threadLocal.get();
+    }
+
+    static public void setCurrentId(String id) {
+        threadLocal.set(id);
+    }
+
+    static public void removeCurrentId() {
+        threadLocal.remove();
+    }
+
     static public AnnotationConfigApplicationContext getApplicationContext() {
         AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
 

@@ -2,6 +2,7 @@ package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Talent;
@@ -28,9 +29,10 @@ public class TalentController {
 
     @PostMapping
     public R<Talent> save(HttpServletRequest request, @RequestBody Talent talent) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String userId = jwtUtil.extractUserId(authToken);
+//        String authorizationHeader = request.getHeader("Authorization");
+//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
+//        String userId = jwtUtil.extractUserId(authToken);
+        String userId = BaseContext.getCurrentId();
         talent.setUser_id(userId);
         talentService.saveOneTalent(talent);
         return R.success(talent);
