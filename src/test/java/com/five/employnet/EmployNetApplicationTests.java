@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.DigestUtils;
 
 import java.util.List;
 
@@ -37,8 +38,7 @@ class EmployNetApplicationTests {
 
     @Test
     void test() {
-        User user = new User();
-        user.setUser_id(null);
+        log.info(DigestUtils.md5DigestAsHex("admin".getBytes()));
     }
 
 }

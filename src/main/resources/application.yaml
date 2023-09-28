@@ -7,8 +7,8 @@ spring:
       url: jdbc:mysql://139.196.48.244:4407/employNet
       username: wu
       password: Wzh913000
-  session:
-    store-type: none    #使用jwt进行身份验证，不在保存session
+#  session:
+#    store-type: none    #使用jwt进行身份验证，不在保存session
   servlet:
     multipart:
       max-file-size: 10MB   #文件传输大小限制

@@ -2,6 +2,7 @@ package com.five.employnet.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class NoticeMessage implements Serializable {
     private String title;
     private String department;
     private String message_detail;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime time;
     private String link;
     private String lab;
