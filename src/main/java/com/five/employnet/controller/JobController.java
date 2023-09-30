@@ -8,6 +8,7 @@ import com.five.employnet.common.R;
 import com.five.employnet.entity.Job;
 import com.five.employnet.service.JobService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,18 +19,13 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
-    final private JwtUtil jwtUtil;
 
-    public JobController(JobService jobService, JwtUtil jwtUtil) {
+    public JobController(JobService jobService) {
         this.jobService = jobService;
-        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping
     public R<Job> save(HttpServletRequest request, @RequestBody Job job) {
-//        String authorizationHeader = request.getHeader("Authorization");
-//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//        String companyId = jwtUtil.extractUserId(authToken);
         String companyId = BaseContext.getCurrentId();
 
         job.setCompany_id(companyId);
@@ -52,5 +48,16 @@ public class JobController {
             jobService.completeJob(job);
         }
         return R.success(pageInfo);
+    }
+
+    @PutMapping
+    public R<Job> update(@RequestBody Job newJob) {
+        return R.success(jobService.update(newJob));
+    }
+
+    @DeleteMapping
+    public R<String> delete(@RequestParam("job_id") String job_id) {
+        jobService.removeById(job_id);
+        return R.success("删除成功");
     }
 }

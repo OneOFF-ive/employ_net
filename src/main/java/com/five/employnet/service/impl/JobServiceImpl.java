@@ -36,4 +36,24 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
         JobMessage jobMessage = jobMessageService.getOne(queryWrapper);
         job.setMessage_detail(jobMessage);
     }
+
+    @Override
+    @Transactional
+    public Job update(Job newJob) {
+        String jobId = newJob.getJob_id();
+        this.updateById(newJob);
+
+        JobMessage newJobMessage = newJob.getMessage_detail();
+        LambdaQueryWrapper<JobMessage> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobMessage::getJob_id, jobId);
+        JobMessage oldJobMessage = jobMessageService.getOne(queryWrapper);
+        if (oldJobMessage != null) {
+            String jobMessageId = oldJobMessage.getId();
+            newJobMessage.setId(jobMessageId);
+            jobMessageService.updateById(newJobMessage);
+        } else {
+            jobMessageService.save(newJobMessage);
+        }
+        return newJob;
+    }
 }
