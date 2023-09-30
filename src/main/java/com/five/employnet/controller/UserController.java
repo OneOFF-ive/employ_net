@@ -114,7 +114,7 @@ public class UserController {
         return R.success(resInfo);
     }
 
-    @PostMapping("collect_job")
+    @PostMapping("/collect_job")
     public R<String> collectJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
         try {
 //            String authorizationHeader = request.getHeader("Authorization");
@@ -132,14 +132,13 @@ public class UserController {
         return R.success("收藏成功");
     }
 
-    @DeleteMapping("delete_job")
-    public R<String> deleteJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
+    @DeleteMapping("/delete_job")
+    public R<String> deleteJob(HttpServletRequest request, @RequestParam("job_id") String jobId) {
         try {
 //            String authorizationHeader = request.getHeader("Authorization");
 //            String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
 //            String userId = jwtUtil.extractUserId(authToken);
             String userId = BaseContext.getCurrentId();
-            String jobId = requestBody.get("job_id");
 
             LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper

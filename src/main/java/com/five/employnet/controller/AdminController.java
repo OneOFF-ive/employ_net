@@ -16,7 +16,6 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin
 public class AdminController {
     final private AdminService adminService;
     final private JwtUtil jwtUtil;

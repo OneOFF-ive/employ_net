@@ -69,4 +69,11 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         Experience experience = experienceService.getOneByTalentId(talentId);
         talent.setExperience(experience);
     }
+
+    @Override
+    public Talent getTalentByUserId(String userId) {
+        LambdaQueryWrapper<Talent> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Talent::getUser_id, userId);
+        return this.getOne(queryWrapper);
+    }
 }

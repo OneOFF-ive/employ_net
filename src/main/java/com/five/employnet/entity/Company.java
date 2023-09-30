@@ -15,6 +15,7 @@ public class Company implements Serializable {
 
     @TableId
     private String company_id;
+    private String user_id;
     private String open_id;
     private String session_key;
     private String nick_name;
