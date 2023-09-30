@@ -3,12 +3,12 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
-import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
+import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Job;
+import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.JobService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,9 +19,11 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
+    private final CompanyService companyService;
 
-    public JobController(JobService jobService) {
+    public JobController(JobService jobService, CompanyService companyService) {
         this.jobService = jobService;
+        this.companyService = companyService;
     }
 
     @PostMapping
@@ -59,5 +61,19 @@ public class JobController {
     public R<String> delete(@RequestParam("job_id") String job_id) {
         jobService.removeById(job_id);
         return R.success("删除成功");
+    }
+
+    @GetMapping
+    public R<List<Job>> myJob() {
+        String userId = BaseContext.getCurrentId();
+        Company company = companyService.getCompanyByUserId(userId);
+        if (company != null) {
+            String companyId = company.getCompany_id();;
+            LambdaQueryWrapper<Job> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Job::getCompany_id, companyId);
+            List<Job> jobList = jobService.list(queryWrapper);
+            return R.success(jobList);
+        }
+        return R.success(null);
     }
 }
