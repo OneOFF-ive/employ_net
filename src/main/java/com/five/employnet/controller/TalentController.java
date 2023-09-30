@@ -19,19 +19,14 @@ import java.util.List;
 public class TalentController {
 
     final private TalentService talentService;
-    final private JwtUtil jwtUtil;
 
-    public TalentController(TalentService talentService, JwtUtil jwtUtil) {
+    public TalentController(TalentService talentService) {
         this.talentService = talentService;
-        this.jwtUtil = jwtUtil;
     }
 
 
     @PostMapping
     public R<Talent> save(HttpServletRequest request, @RequestBody Talent talent) {
-//        String authorizationHeader = request.getHeader("Authorization");
-//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//        String userId = jwtUtil.extractUserId(authToken);
         String userId = BaseContext.getCurrentId();
         talent.setUser_id(userId);
         talentService.saveOneTalent(talent);
@@ -54,9 +49,26 @@ public class TalentController {
     }
 
     @DeleteMapping
-    public R<String> delete(@RequestParam String talentId) {
+    public R<String> delete() {
+        String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        String talentId = talent.getTalent_id();
         talentService.removeById(talentId);
         return R.success("1");
     }
 
+    @GetMapping
+    public R<Talent> getTalent() {
+        String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        return R.success(talent);
+    }
+
+    @PutMapping
+    public R<Talent> update(@RequestBody Talent newTalent) {
+        String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        newTalent.setTalent_id(talent.getTalent_id());
+        return R.success(talentService.update(newTalent));
+    }
 }

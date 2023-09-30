@@ -53,5 +53,4 @@ public class JobController {
         }
         return R.success(pageInfo);
     }
-
 }

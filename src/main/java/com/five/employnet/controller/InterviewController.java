@@ -32,33 +32,35 @@ public class InterviewController {
     }
 
     @GetMapping("/talent")
-    public R<List<Interview>> getTalentInterview() {
+    public R<List<Interview>> getTalentInterview(@RequestParam("receive") boolean receive) {
         String userId = BaseContext.getCurrentId();
-        Talent talent = talentService.getTalentByUserId(userId);
+        Talent talent = talentService.getTalentWithoutDetailByUserId(userId);
         if (talent != null) {
             String talentId = talent.getTalent_id();
             LambdaQueryWrapper<Interview> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Interview::getTalent_id, talentId);
+            queryWrapper
+                    .eq(Interview::getTalent_id, talentId)
+                    .eq(Interview::isReceive, receive);
             List<Interview> interviewList = interviewService.list(queryWrapper);
             return R.success(interviewList);
-        }
-        else {
+        } else {
             return R.success(new ArrayList<Interview>());
         }
     }
 
     @GetMapping("/company")
-    public R<List<Interview>> getCompanyInterview() {
+    public R<List<Interview>> getCompanyInterview(@RequestParam("receive") boolean receive) {
         String userId = BaseContext.getCurrentId();
         Company company = companyService.getCompanyByUserId(userId);
         if (company != null) {
             String companyId = company.getCompany_id();
             LambdaQueryWrapper<Interview> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(Interview::getCompany_id, companyId);
+            queryWrapper
+                    .eq(Interview::getCompany_id, companyId)
+                    .eq(Interview::isReceive, receive);
             List<Interview> interviewList = interviewService.list(queryWrapper);
             return R.success(interviewList);
-        }
-        else {
+        } else {
             return R.success(new ArrayList<Interview>());
         }
     }
