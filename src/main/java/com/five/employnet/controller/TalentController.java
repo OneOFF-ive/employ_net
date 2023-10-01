@@ -26,7 +26,7 @@ public class TalentController {
 
 
     @PostMapping
-    public R<Talent> save(HttpServletRequest request, @RequestBody Talent talent) {
+    public R<Talent> save(@RequestBody Talent talent) {
         String userId = BaseContext.getCurrentId();
         talent.setUser_id(userId);
         talentService.saveOneTalent(talent);
@@ -41,7 +41,7 @@ public class TalentController {
         talentService.page(talentPage, talentLambdaQueryWrapper);
         List<Talent> talentList = talentPage.getRecords();
 
-        for (Talent talent: talentList) {
+        for (Talent talent : talentList) {
             talentService.completeTalent(talent);
         }
 
@@ -65,10 +65,16 @@ public class TalentController {
     }
 
     @PutMapping
-    public R<Talent> update(@RequestBody Talent newTalent) {
+    public R<Talent> updateOrSave(@RequestBody Talent newTalent) {
         String userId = BaseContext.getCurrentId();
         Talent talent = talentService.getTalentByUserId(userId);
-        newTalent.setTalent_id(talent.getTalent_id());
-        return R.success(talentService.update(newTalent));
+        if (talent == null) {
+            newTalent.setUser_id(userId);
+            talentService.saveOneTalent(newTalent);
+            return R.success(newTalent);
+        } else {
+            newTalent.setTalent_id(talent.getTalent_id());
+            return R.success(talentService.update(newTalent));
+        }
     }
 }

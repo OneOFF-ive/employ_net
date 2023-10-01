@@ -10,6 +10,8 @@ server:
 http-port: 8080 # http重定向https配置
 
 spring:
+  main:
+    web-application-type: SERVLET
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,6 +44,6 @@ wechat:
   app-url: "https://api.weixin.qq.com/sns/jscode2session"
   app-id: "wx843ce82edd62d18a"
   app-secret: "3f07f2208a5bca557a121a2e82fb9781"
-  avatar-base-path: "D:\\EmployNet\\avatar\\"   #头像存储位置
-  annex-base-path: "D:\\EmployNet\\annex\\"     #文件存储位置
+  avatar-base-path: "/AppImage/"   #头像存储位置
+  annex-base-path: "/AppImage/"     #文件存储位置
 

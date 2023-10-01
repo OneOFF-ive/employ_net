@@ -5,20 +5,14 @@ import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.dto.UserDto;
-import com.five.employnet.entity.Job;
-import com.five.employnet.entity.User;
-import com.five.employnet.entity.JobCollection;
-import com.five.employnet.service.JobService;
-import com.five.employnet.service.JobCollectionService;
-import com.five.employnet.service.UserService;
-import com.five.employnet.service.WeChatService;
+import com.five.employnet.entity.*;
+import com.five.employnet.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,21 +26,23 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final JobCollectionService jobCollectionService;
     private final JobService jobService;
+    private final TalentCollectionService talentCollectionService;
+    private final TalentService talentService;
+    private final CompanyService companyService;
 
-    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService) {
+    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService, TalentCollectionService talentCollectionService, TalentService talentService, CompanyService companyService) {
         this.userService = userService;
         this.weChatService = weChatService;
         this.jwtUtil = jwtUtil;
         this.jobCollectionService = jobCollectionService;
         this.jobService = jobService;
+        this.talentCollectionService = talentCollectionService;
+        this.talentService = talentService;
+        this.companyService = companyService;
     }
 
     @PostMapping("/update")
-    public R<String> update(HttpServletRequest request, @RequestBody User user) {
-//        String authorizationHeader = request.getHeader("Authorization");
-//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//        String userId = jwtUtil.extractUserId(authToken);
-
+    public R<String> update(@RequestBody User user) {
         String userId = BaseContext.getCurrentId();
         user.setUser_id(userId);
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
@@ -55,7 +51,7 @@ public class UserController {
         return R.success("success");
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public R<UserDto> login(@RequestBody Map<String, String> requestBody) {
         String code = requestBody.get("code");
 
@@ -86,15 +82,20 @@ public class UserController {
             String userId = user.getUser_id();
             String token = jwtUtil.generateToken(String.valueOf(userId));
             res.add("token", token);
+
+            LambdaQueryWrapper<Company> companyLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            companyLambdaQueryWrapper.eq(Company::getUser_id, userId);
+            Company company = companyService.getOne(companyLambdaQueryWrapper);
+            if (company != null) {
+                res.add("company", company);
+            }
             return res;
         }
     }
 
+    //查询用户收藏的职位
     @GetMapping("/job_collection")
-    public R<List<Job>> getUserCollection(HttpServletRequest request) {
-//        String authorizationHeader = request.getHeader("Authorization");
-//        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//        String userId = jwtUtil.extractUserId(authToken);
+    public R<List<Job>> getUserCollection() {
         String userId = BaseContext.getCurrentId();
 
         LambdaQueryWrapper<JobCollection> queryWrapper = new LambdaQueryWrapper<>();
@@ -113,8 +114,9 @@ public class UserController {
         return R.success(resInfo);
     }
 
+    //用户收藏一个职位
     @PostMapping("/collect_job")
-    public R<String> collectJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
+    public R<String> collectJob(@RequestBody Map<String, String> requestBody) {
         try {
             String userId = BaseContext.getCurrentId();
             String jobId = requestBody.get("job_id");
@@ -128,8 +130,9 @@ public class UserController {
         return R.success("收藏成功");
     }
 
+    //用户删除一个收藏的职位
     @DeleteMapping("/delete_job")
-    public R<String> deleteJob(HttpServletRequest request, @RequestParam("job_id") String jobId) {
+    public R<String> deleteJob(@RequestParam("job_id") String jobId) {
         try {
             String userId = BaseContext.getCurrentId();
 
@@ -139,9 +142,57 @@ public class UserController {
                     .eq(JobCollection::getJob_id, jobId);
             jobCollectionService.remove(queryWrapper);
         } catch (Exception e) {
-            return R.error("删除失败");
+            return R.success("删除失败");
         }
         return R.error("删除成功");
+    }
+
+    //用户收藏一个人才
+    @PostMapping("/collect_talent")
+    public R<String> collectTalent(@RequestBody Map<String, String> requestBody) {
+        try {
+            String talentId = requestBody.get("talent_id");
+            String userId = BaseContext.getCurrentId();
+            TalentCollection talentCollection = new TalentCollection();
+            talentCollection.setTalent_id(talentId);
+            talentCollection.setUser_id(userId);
+            talentCollectionService.save(talentCollection);
+            return R.success("收藏成功");
+        } catch (Exception e) {
+            return R.error("收藏失败");
+        }
+    }
+
+    //查询人才收藏库
+    @GetMapping
+    public R<List<Talent>> getTalentCollection() {
+        String userId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<TalentCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TalentCollection::getUser_id, userId);
+        List<TalentCollection> talentCollectionList = talentCollectionService.list(queryWrapper);
+        if (talentCollectionList != null) {
+            List<String> talentIdList = talentCollectionList.stream().map(
+                    TalentCollection::getTalent_id
+            ).toList();
+            List<Talent> talentList = talentService.listByIds(talentIdList);
+            for (Talent talent:talentList) {
+                talentService.completeTalent(talent);
+            }
+            return R.success(talentList);
+        }
+        else return R.success(null);
+    }
+
+    //用户取消人才收藏
+    @DeleteMapping("delete_talent")
+    public R<String> deleteTalent(@RequestParam("talent_id") String talentId) {
+        String useId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<TalentCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(TalentCollection::getTalent_id, talentId)
+                .eq(TalentCollection::getUser_id, useId);
+        talentCollectionService.remove(queryWrapper);
+        return R.success("删除成功");
     }
 
 }
