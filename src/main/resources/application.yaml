@@ -1,5 +1,14 @@
 server:
-  port: 8080
+  port: 4040
+  ssl:
+    # 改成你的jks文件名
+    key-store: classpath:lightblueyzj.cn.jks
+    key-store-type: JKS
+    #改成你的密钥（设置了密钥就填你的密钥，没有设置就打开keystorePass.txt这个文件，复制里面的密钥）
+    key-store-password: t10kl9813i707
+
+http-port: 8080 # http重定向https配置
+
 spring:
   datasource:
     druid:
@@ -35,3 +44,4 @@ wechat:
   app-secret: "3f07f2208a5bca557a121a2e82fb9781"
   avatar-base-path: "D:\\EmployNet\\avatar\\"   #头像存储位置
   annex-base-path: "D:\\EmployNet\\annex\\"     #文件存储位置
+
