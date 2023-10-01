@@ -7,7 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-public class UserCollection implements Serializable {
+public class JobCollection implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

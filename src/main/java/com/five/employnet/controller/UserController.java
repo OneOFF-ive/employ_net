@@ -7,9 +7,9 @@ import com.five.employnet.common.R;
 import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.Job;
 import com.five.employnet.entity.User;
-import com.five.employnet.entity.UserCollection;
+import com.five.employnet.entity.JobCollection;
 import com.five.employnet.service.JobService;
-import com.five.employnet.service.UserCollectionService;
+import com.five.employnet.service.JobCollectionService;
 import com.five.employnet.service.UserService;
 import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.invoke.LambdaMetafactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,14 +30,14 @@ public class UserController {
     private final UserService userService;
     private final WeChatService weChatService;
     private final JwtUtil jwtUtil;
-    private final UserCollectionService userCollectionService;
+    private final JobCollectionService jobCollectionService;
     private final JobService jobService;
 
-    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, UserCollectionService userCollectionService, JobService jobService) {
+    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService) {
         this.userService = userService;
         this.weChatService = weChatService;
         this.jwtUtil = jwtUtil;
-        this.userCollectionService = userCollectionService;
+        this.jobCollectionService = jobCollectionService;
         this.jobService = jobService;
     }
 
@@ -56,7 +55,7 @@ public class UserController {
         return R.success("success");
     }
 
-    @RequestMapping("/login")
+    @GetMapping("/login")
     public R<UserDto> login(@RequestBody Map<String, String> requestBody) {
         String code = requestBody.get("code");
 
@@ -98,11 +97,11 @@ public class UserController {
 //        String userId = jwtUtil.extractUserId(authToken);
         String userId = BaseContext.getCurrentId();
 
-        LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserCollection::getUser_id, userId);
-        List<UserCollection> userCollections = userCollectionService.list(queryWrapper);
-        List<String> jobIdList = userCollections.stream().map(
-                UserCollection::getJob_id
+        LambdaQueryWrapper<JobCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobCollection::getUser_id, userId);
+        List<JobCollection> jobCollections = jobCollectionService.list(queryWrapper);
+        List<String> jobIdList = jobCollections.stream().map(
+                JobCollection::getJob_id
         ).toList();
         List<Job> resInfo = new ArrayList<>();
         if (!jobIdList.isEmpty()) {
@@ -117,15 +116,12 @@ public class UserController {
     @PostMapping("/collect_job")
     public R<String> collectJob(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
         try {
-//            String authorizationHeader = request.getHeader("Authorization");
-//            String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//            String userId = jwtUtil.extractUserId(authToken);
             String userId = BaseContext.getCurrentId();
             String jobId = requestBody.get("job_id");
-            UserCollection userCollection = new UserCollection();
-            userCollection.setUser_id(userId);
-            userCollection.setJob_id(jobId);
-            userCollectionService.save(userCollection);
+            JobCollection jobCollection = new JobCollection();
+            jobCollection.setUser_id(userId);
+            jobCollection.setJob_id(jobId);
+            jobCollectionService.save(jobCollection);
         } catch (DataIntegrityViolationException e) {
             return R.error("收藏失败");
         }
@@ -135,16 +131,13 @@ public class UserController {
     @DeleteMapping("/delete_job")
     public R<String> deleteJob(HttpServletRequest request, @RequestParam("job_id") String jobId) {
         try {
-//            String authorizationHeader = request.getHeader("Authorization");
-//            String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-//            String userId = jwtUtil.extractUserId(authToken);
             String userId = BaseContext.getCurrentId();
 
-            LambdaQueryWrapper<UserCollection> queryWrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<JobCollection> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper
-                    .eq(UserCollection::getUser_id, userId)
-                    .eq(UserCollection::getJob_id, jobId);
-            userCollectionService.remove(queryWrapper);
+                    .eq(JobCollection::getUser_id, userId)
+                    .eq(JobCollection::getJob_id, jobId);
+            jobCollectionService.remove(queryWrapper);
         } catch (Exception e) {
             return R.error("删除失败");
         }
