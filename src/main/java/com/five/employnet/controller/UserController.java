@@ -1,21 +1,26 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
+import com.five.employnet.dto.AdminDto;
 import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.*;
 import com.five.employnet.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.support.BeanDefinitionDsl;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -45,9 +50,9 @@ public class UserController {
     public R<String> update(@RequestBody User user) {
         String userId = BaseContext.getCurrentId();
         user.setUser_id(userId);
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUser_id, userId);
-        userService.updateById(user);
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", userId);
+        userService.update(user, updateWrapper);
         return R.success("success");
     }
 
@@ -91,6 +96,77 @@ public class UserController {
             }
             return res;
         }
+    }
+
+    @PostMapping("/login/username")
+    public R<UserDto> login(@RequestBody User user) {
+        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        String username = user.getUsername();
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUsername, username);
+        User u = userService.getOne(queryWrapper);
+        if (u == null) {
+            return R.error("用户不存在");
+        } else if (!Objects.equals(u.getPassword(), password)) {
+            return R.error("密码错误");
+        } else {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(u, userDto);
+            String userId = u.getUser_id();
+            String token = jwtUtil.generateToken(String.valueOf(userId));
+            return R.success(userDto).add("token", token);
+        }
+    }
+
+    @PostMapping("/setUsername")
+    public R<String> setUsername(@RequestBody User user) {
+        String userId = BaseContext.getCurrentId();
+        String username = user.getUsername();
+        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        user.setUser_id(userId);
+        user.setPassword(password);
+
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getUsername, username);
+        User u = userService.getOne(userLambdaQueryWrapper);
+        if (u == null || Objects.equals(u.getUser_id(), userId)) {
+            UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("user_id", user.getUser_id());
+            userService.update(user, updateWrapper);
+            return R.success("设置成功");
+        } else {
+            return R.error("用户名已存在");
+        }
+    }
+
+    @PostMapping("/verifyPassword")
+    public R<String> verifyPassword(@RequestBody Map<String, String> requestBody) {
+        String userId = BaseContext.getCurrentId();
+        String password = DigestUtils.md5DigestAsHex(requestBody.get("password").getBytes());
+        User user = userService.getById(userId);
+        if (user == null || !Objects.equals(user.getPassword(), password)) {
+            return R.error("密码错误");
+        }
+        else {
+            return R.success("密码正确");
+        }
+    }
+
+    @PostMapping("/transfer")
+    public R<String> transfer(@RequestBody Map<String, String> requestBody) {
+        String userId = BaseContext.getCurrentId();
+        User currentUser = userService.getById(userId);
+
+        String username = requestBody.get("username");
+        LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userLambdaQueryWrapper.eq(User::getUsername, username);
+        User targetUser = userService.getOne(userLambdaQueryWrapper);
+        if (targetUser != null) {
+            if (userService.transfer(currentUser, targetUser)) {
+                return R.success("转移成功");
+            }
+            else return R.success("转移失败");
+        } else return R.error("用户不存在");
     }
 
     //查询用户收藏的职位
@@ -142,9 +218,9 @@ public class UserController {
                     .eq(JobCollection::getJob_id, jobId);
             jobCollectionService.remove(queryWrapper);
         } catch (Exception e) {
-            return R.success("删除失败");
+            return R.error("删除失败");
         }
-        return R.error("删除成功");
+        return R.success("删除成功");
     }
 
     //用户收藏一个人才
