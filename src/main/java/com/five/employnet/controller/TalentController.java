@@ -3,14 +3,12 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
-import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Talent;
 import com.five.employnet.service.TalentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
