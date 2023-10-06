@@ -2,10 +2,7 @@ package com.five.employnet;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.JwtUtil;
-import com.five.employnet.entity.Job;
-import com.five.employnet.entity.JobMessage;
 import com.five.employnet.entity.User;
-import com.five.employnet.service.JobMessageService;
 import com.five.employnet.service.JobService;
 import com.five.employnet.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.DigestUtils;
 
-import java.util.List;
-
 @SpringBootTest
 @Slf4j
 class EmployNetApplicationTests {
@@ -23,8 +18,6 @@ class EmployNetApplicationTests {
     UserService userService;
     @Autowired
     JwtUtil jwtUtil;
-    @Autowired
-    JobMessageService jobMessageService;
     @Autowired
     JobService jobService;
 

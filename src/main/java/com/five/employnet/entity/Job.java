@@ -26,8 +26,7 @@ public class Job implements Serializable {
     private String company;
     private String avatar_url;
     private String message_detail;
-    @TableField(exist = false)
-    private JobRequest request;
+    private String request;
     private String welfare;
     private String address;
     private String remark;
