@@ -27,11 +27,9 @@ public class Company implements Serializable {
     private String business;        //公司行业
     private String address;
     private String work_detail;     //工作细节
-    @TableField(exist = false)
-    private List<Welfare> welfare_list; //福利列表
+    private String welfare_list; //福利列表
     private String introduce;
     private String link_person;     //联系人
     private String phone_number;
-    @TableField(exist = false)
-    private List<Annex> annex_list;   //附件列表
+    private String annex_list;   //附件列表
 }

@@ -11,7 +11,6 @@ import com.five.employnet.service.JobService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Slf4j
@@ -27,12 +26,16 @@ public class JobController {
     }
 
     @PostMapping
-    public R<Job> save(HttpServletRequest request, @RequestBody Job job) {
-        String companyId = BaseContext.getCurrentId();
-
-        job.setCompany_id(companyId);
-        jobService.saveJob(job);
-        return R.success(job);
+    public R<Job> save(@RequestBody Job job) {
+        String userId = BaseContext.getCurrentId();
+        Company company = companyService.getCompanyByUserId(userId);
+        if (company != null) {
+            String companyId = company.getCompany_id();
+            job.setCompany_id(companyId);
+            jobService.saveJob(job, company);
+            return R.success(job);
+        }
+        else return R.error("公司不存在");
     }
 
     @GetMapping("/page")
@@ -54,7 +57,7 @@ public class JobController {
 
     @PutMapping
     public R<Job> update(@RequestBody Job newJob) {
-        return R.success(jobService.update(newJob));
+        return R.success(jobService.updateJob(newJob));
     }
 
     @DeleteMapping

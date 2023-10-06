@@ -238,13 +238,13 @@ public class UserController {
     }
 
     //查询人才收藏库
-    @GetMapping
+    @GetMapping("talent_collection")
     public R<List<Talent>> getTalentCollection() {
         String userId = BaseContext.getCurrentId();
         LambdaQueryWrapper<TalentCollection> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(TalentCollection::getUser_id, userId);
         List<TalentCollection> talentCollectionList = talentCollectionService.list(queryWrapper);
-        if (talentCollectionList != null) {
+        if (!talentCollectionList.isEmpty()) {
             List<String> talentIdList = talentCollectionList.stream().map(
                     TalentCollection::getTalent_id
             ).toList();

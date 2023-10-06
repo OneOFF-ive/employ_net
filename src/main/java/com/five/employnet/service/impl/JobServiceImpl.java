@@ -2,9 +2,11 @@ package com.five.employnet.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Job;
 import com.five.employnet.entity.JobMessage;
 import com.five.employnet.mapper.JobMapper;
+import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.JobMessageService;
 import com.five.employnet.service.JobService;
 import org.springframework.stereotype.Service;
@@ -13,19 +15,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobService {
 
-    final JobMessageService jobMessageService;
+    final private JobMessageService jobMessageService;
+    final private CompanyService companyService;
 
-    public JobServiceImpl(JobMessageService jobMessageService) {
+    public JobServiceImpl(JobMessageService jobMessageService, CompanyService companyService, CompanyService companyService1) {
         this.jobMessageService = jobMessageService;
+        this.companyService = companyService1;
     }
 
     @Override
     @Transactional
-    public void saveJob(Job job) {
+    public void saveJob(Job job, Company company) {
+        job.setCompany(company.getName());
+        job.setBusiness(company.getBusiness());
+        job.setAvatar_url(company.getAvatar_url());
+        job.setLab(company.getCompany_class());
         this.save(job);
         JobMessage jobMessage = job.getMessage_detail();
-        jobMessage.setJob_id(job.getJob_id());
-        jobMessageService.save(jobMessage);
+        if (jobMessage != null) {
+            jobMessage.setJob_id(job.getJob_id());
+            jobMessageService.save(jobMessage);
+        }
     }
 
     @Override
@@ -39,8 +49,13 @@ public class JobServiceImpl extends ServiceImpl<JobMapper, Job> implements JobSe
 
     @Override
     @Transactional
-    public Job update(Job newJob) {
+    public Job updateJob(Job newJob) {
         String jobId = newJob.getJob_id();
+        Company company = companyService.getById(newJob.getCompany_id());
+        newJob.setCompany(company.getName());
+        newJob.setBusiness(company.getBusiness());
+        newJob.setAvatar_url(company.getAvatar_url());
+        newJob.setLab(company.getCompany_class());
         this.updateById(newJob);
 
         JobMessage newJobMessage = newJob.getMessage_detail();

@@ -83,7 +83,7 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
 
         LambdaQueryWrapper<EductionExperience> eductionExperienceWrapper = new LambdaQueryWrapper<>();
         eductionExperienceWrapper.eq(EductionExperience::getTalent_id, talentId);
-        eductionExperienceService.removeById(eductionExperienceWrapper);
+        eductionExperienceService.remove(eductionExperienceWrapper);
 
         LambdaQueryWrapper<Experience> experienceWrapper = new LambdaQueryWrapper<>();
         experienceWrapper.eq(Experience::getTalent_id, talentId);

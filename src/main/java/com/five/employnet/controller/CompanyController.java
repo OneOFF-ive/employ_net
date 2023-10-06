@@ -1,6 +1,8 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Company;
@@ -8,12 +10,10 @@ import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.WeChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.invoke.LambdaMetafactory;
 import java.util.Map;
 
 @RestController
@@ -65,15 +65,36 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/update")
-    public R<String> update(HttpServletRequest request, @RequestBody Company company) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String authToken = authorizationHeader.substring(7); // 去掉"Bearer "前缀
-        String companyId = jwtUtil.extractUserId(authToken);
-        company.setCompany_id(companyId);
+    @PutMapping
+    public R<Company> updateOrSave(@RequestBody Company newCompany) {
+        String userId = BaseContext.getCurrentId();
+        Company company = companyService.getCompanyByUserId(userId);
+        if (company == null) {
+            newCompany.setUser_id(userId);
+            companyService.save(newCompany);
+        }
+        else {
+            String companyId = company.getCompany_id();
+            newCompany.setCompany_id(companyId);
+            companyService.updateById(newCompany);
+        }
+        return R.success(newCompany);
+    }
+
+    @GetMapping
+    public R<Company> getCompany() {
+        String userId = BaseContext.getCurrentId();
+        Company company = companyService.getCompanyByUserId(userId);
+        if (company != null) return R.success(company);
+        else return R.error(null);
+    }
+
+    @DeleteMapping
+    public R<String> delete() {
+        String userId = BaseContext.getCurrentId();
         LambdaQueryWrapper<Company> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Company::getCompany_id, companyId);
-        companyService.updateById(company);
-        return R.success("success");
+        queryWrapper.eq(Company::getUser_id, userId);
+        companyService.remove(queryWrapper);
+        return R.success("删除成功");
     }
 }
