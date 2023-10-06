@@ -7,16 +7,12 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @Data
-public class JobRequest  implements Serializable {
+public class Msg  implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @TableId
     private String id;
-    private String job_id;
-    private String major;
-    private String age;
-    private String education;
-    private String sex;
-    private String experience;
+    private String title;
+    private String url;
 }
