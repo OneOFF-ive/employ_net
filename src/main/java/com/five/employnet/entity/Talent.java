@@ -23,6 +23,7 @@ public class Talent implements Serializable {
     private String home_location;
     private String name;
     private String phone;
+    private String major;
     private String profile_photo;
     private String resume;
     private String resume_file;
