@@ -25,14 +25,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
     @Override
     public void completeInterview(Interview interview) {
         String userId = BaseContext.getCurrentId();
-
         Company company = companyService.getCompanyByUserId(userId);
         interview.setCompany_id(company.getCompany_id());
-        interview.setCompany_name(company.getName());
-        interview.setCompany_icon(company.getAvatar_url());
-
-        String jobId = interview.getJob_id();
-        Job job = jobService.getById(jobId);
-        interview.setJob_title(job.getTitle());
     }
 }
