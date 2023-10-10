@@ -48,7 +48,7 @@ public class InterviewController {
             List<InterviewView> interviewViewList = interviewViewService.list(queryWrapper);
             return R.success(interviewViewList);
         } else {
-            return R.success(new ArrayList<InterviewView>());
+            return R.success(new ArrayList<>());
         }
     }
 
@@ -65,7 +65,7 @@ public class InterviewController {
             List<InterviewView> interviewViewList = interviewViewService.list(queryWrapper);
             return R.success(interviewViewList);
         } else {
-            return R.success(new ArrayList<InterviewView>());
+            return R.success(new ArrayList<>());
         }
     }
 
