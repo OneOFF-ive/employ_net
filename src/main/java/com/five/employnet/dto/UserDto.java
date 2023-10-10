@@ -1,6 +1,5 @@
 package com.five.employnet.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDate;

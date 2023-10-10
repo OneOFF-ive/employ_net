@@ -1,5 +1,6 @@
 package com.five.employnet.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -29,4 +30,6 @@ public class Interview implements Serializable {
     private LocalDateTime send_time;
     private String info;
     private String style;
+    @TableField(exist = false)
+    private Talent talent;
 }

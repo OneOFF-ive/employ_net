@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 @Slf4j
 class EmployNetApplicationTests {
@@ -31,7 +34,8 @@ class EmployNetApplicationTests {
 
     @Test
     void test() {
-        log.info(DigestUtils.md5DigestAsHex("admin".getBytes()));
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        log.info(list.toString());
     }
-
 }

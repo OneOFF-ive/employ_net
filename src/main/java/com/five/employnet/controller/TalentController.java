@@ -32,10 +32,21 @@ public class TalentController {
     }
 
     @GetMapping("/page")
-    public R<Page<Talent>> getPage(@RequestParam int page, @RequestParam int pageSize, String prompt) {
+    public R<Page<Talent>> getPage(@RequestParam int page, @RequestParam int pageSize, String prompt,
+                                   String home_location,
+                                   String education_level,
+                                   String sex,
+                                   String state,
+                                   String job_intention) {
         Page<Talent> talentPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Talent> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        talentLambdaQueryWrapper.like(prompt != null, Talent::getSelf_introduce, prompt);
+        talentLambdaQueryWrapper
+                .like(prompt != null, Talent::getSelf_introduce, prompt)
+                .like(home_location != null, Talent::getHome_location, home_location)
+                .like(education_level != null, Talent::getEduction_level, education_level)
+                .like(sex != null, Talent::getSex, sex)
+                .like(state != null, Talent::getState, state)
+                .like(job_intention != null, Talent::getIntention_msg, job_intention);
         talentService.page(talentPage, talentLambdaQueryWrapper);
         List<Talent> talentList = talentPage.getRecords();
 

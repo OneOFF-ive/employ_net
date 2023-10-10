@@ -2,6 +2,7 @@ package com.five.employnet.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serial;
@@ -9,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
+@TableName("job_view")
 public class Job implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

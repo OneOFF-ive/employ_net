@@ -2,6 +2,7 @@ package com.five.employnet.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serial;
@@ -42,4 +43,7 @@ public class Talent implements Serializable {
 
     @TableField(exist = false)
     private List<JobIntention> job_intention;
+
+    @JsonIgnore
+    private String intention_msg;
 }

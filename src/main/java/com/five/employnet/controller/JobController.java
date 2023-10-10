@@ -45,13 +45,16 @@ public class JobController {
         jobLambdaQueryWrapper
                 .like(prompt != null, Job::getJob_lab, prompt)
                 .or()
+                .like(prompt != null, Job::getLab, prompt)
+                .or()
+                .like(prompt != null, Job::getCompany, prompt)
+                .or()
+                .like(prompt != null, Job::getBusiness, prompt)
+                .or()
+                .like(prompt !=null, Job::getAddress, prompt)
+                .or()
                 .like(prompt != null, Job::getTitle, prompt);
         jobService.page(pageInfo, jobLambdaQueryWrapper);
-
-        List<Job> jobList = pageInfo.getRecords();
-        for (Job job : jobList) {
-            jobService.completeJob(job);
-        }
         return R.success(pageInfo);
     }
 

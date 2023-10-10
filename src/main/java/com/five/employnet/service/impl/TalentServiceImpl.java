@@ -32,6 +32,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public void saveOneTalent(Talent talent) {
+        List<JobIntention> jobIntention = talent.getJob_intention();
+        if (jobIntention != null) {
+            talent.setIntention_msg(jobIntention.toString());
+        }
         this.save(talent);
         String talentId = talent.getTalent_id();
 
@@ -78,6 +82,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public Talent update(Talent newTalent) {
+        List<JobIntention> jobIntention = newTalent.getJob_intention();
+        if (jobIntention != null) {
+            newTalent.setIntention_msg(jobIntention.toString());
+        }
         this.updateById(newTalent);
         String talentId = newTalent.getTalent_id();
 

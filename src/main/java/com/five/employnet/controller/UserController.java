@@ -181,9 +181,6 @@ public class UserController {
         List<Job> resInfo = new ArrayList<>();
         if (!jobIdList.isEmpty()) {
             resInfo = jobService.listByIds(jobIdList);
-            for (Job job : resInfo) {
-                jobService.completeJob(job);
-            }
         }
         return R.success(resInfo);
     }

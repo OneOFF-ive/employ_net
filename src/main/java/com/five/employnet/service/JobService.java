@@ -6,6 +6,5 @@ import com.five.employnet.entity.Job;
 
 public interface JobService extends IService<Job> {
     void saveJob(Job job, Company company);
-    void completeJob(Job job);
     Job updateJob(Job newJob);
 }
