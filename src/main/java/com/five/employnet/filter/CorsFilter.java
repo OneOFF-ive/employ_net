@@ -1,0 +1,51 @@
+package com.five.employnet.filter;
+
+import org.springframework.stereotype.Component;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+@Component
+public class CorsFilter implements Filter {
+
+    // This is to be replaced with a list of domains allowed to access the server
+    //You can include more than one origin here
+    private final List<String> allowedOrigins = List.of("http://localhost:8080");
+
+    public void destroy() {
+
+    }
+
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        // Let's make sure that we are working with HTTP (that is, against HttpServletRequest and HttpServletResponse objects)
+        if (req instanceof HttpServletRequest request && res instanceof HttpServletResponse response) {
+
+            // Access-Control-Allow-Origin
+            String origin = request.getHeader("Origin");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.setHeader("Vary", "Origin");
+
+            // Access-Control-Max-Age
+            response.setHeader("Access-Control-Max-Age", "3600");
+
+            // Access-Control-Allow-Credentials
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+
+            // Access-Control-Allow-Methods
+            response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE");
+
+            // Access-Control-Allow-Headers
+            response.setHeader("Access-Control-Allow-Headers",
+                    "Origin, X-Requested-With, Content-Type, Accept, " + "X-CSRF-TOKEN");
+        }
+
+        chain.doFilter(req, res);
+    }
+
+    public void init(FilterConfig filterConfig) {
+    }
+}
