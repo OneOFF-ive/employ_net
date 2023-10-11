@@ -8,6 +8,8 @@ import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Job;
 import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.JobService;
+import com.five.employnet.service.JobViewService;
+import com.five.employnet.view.JobView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +20,12 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
+    private final JobViewService jobViewService;
     private final CompanyService companyService;
 
-    public JobController(JobService jobService, CompanyService companyService) {
+    public JobController(JobService jobService, JobViewService jobViewService, CompanyService companyService) {
         this.jobService = jobService;
+        this.jobViewService = jobViewService;
         this.companyService = companyService;
     }
 
@@ -39,22 +43,22 @@ public class JobController {
     }
 
     @GetMapping("/page")
-    public R<Page<Job>> getPage(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, String prompt) {
-        Page<Job> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Job> jobLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    public R<Page<JobView>> getPage(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, String prompt) {
+        Page<JobView> pageInfo = new Page<>(page, pageSize);
+        LambdaQueryWrapper<JobView> jobLambdaQueryWrapper = new LambdaQueryWrapper<>();
         jobLambdaQueryWrapper
-                .like(prompt != null, Job::getJob_lab, prompt)
+                .like(prompt != null, JobView::getJob_lab, prompt)
                 .or()
-                .like(prompt != null, Job::getLab, prompt)
+                .like(prompt != null, JobView::getLab, prompt)
                 .or()
-                .like(prompt != null, Job::getCompany, prompt)
+                .like(prompt != null, JobView::getCompany, prompt)
                 .or()
-                .like(prompt != null, Job::getBusiness, prompt)
+                .like(prompt != null, JobView::getBusiness, prompt)
                 .or()
-                .like(prompt !=null, Job::getAddress, prompt)
+                .like(prompt !=null, JobView::getAddress, prompt)
                 .or()
                 .like(prompt != null, Job::getTitle, prompt);
-        jobService.page(pageInfo, jobLambdaQueryWrapper);
+        jobViewService.page(pageInfo, jobLambdaQueryWrapper);
         return R.success(pageInfo);
     }
 

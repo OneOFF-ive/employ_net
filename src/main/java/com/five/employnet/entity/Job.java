@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
-@TableName("job_view")
+@TableName("job")
 public class Job implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -22,11 +22,7 @@ public class Job implements Serializable {
     private String salary;
     private LocalDate time;
     private int number;
-    private String lab;
     private String job_lab;
-    private String business;
-    private String company;
-    private String avatar_url;
     private String message_detail;
     private String request;
     private String welfare;
