@@ -78,7 +78,7 @@ public class JobController {
         String userId = BaseContext.getCurrentId();
         Company company = companyService.getCompanyByUserId(userId);
         if (company != null) {
-            String companyId = company.getCompany_id();;
+            String companyId = company.getCompany_id();
             LambdaQueryWrapper<Job> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(Job::getCompany_id, companyId);
             List<Job> jobList = jobService.list(queryWrapper);
