@@ -45,13 +45,16 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public R<String> update(@RequestBody User user) {
+    public R<UserDto> update(@RequestBody User user) {
         String userId = BaseContext.getCurrentId();
         user.setUser_id(userId);
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("user_id", userId);
         userService.update(user, updateWrapper);
-        return R.success("success");
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        userDto.setUser_id(userId);
+        return R.success(userDto);
     }
 
     @PostMapping("/login")
