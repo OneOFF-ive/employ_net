@@ -274,6 +274,12 @@ public class UserController {
         return R.success("删除成功");
     }
 
+    @GetMapping("/getUserId")
+    public R<String> getUserId(@RequestParam("companyId") String companyId) {
+        Company company = companyService.getById(companyId);
+        return R.success(company.getUser_id());
+    }
+
 }
 
 
