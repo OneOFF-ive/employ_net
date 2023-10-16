@@ -44,6 +44,11 @@ public class UserController {
         this.companyService = companyService;
     }
 
+    @GetMapping("/auth")
+    public R<String> auth() {
+        return R.success("OK");
+    }
+
     @PostMapping("/update")
     public R<UserDto> update(@RequestBody User user) {
         String userId = BaseContext.getCurrentId();
