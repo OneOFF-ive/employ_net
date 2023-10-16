@@ -18,8 +18,6 @@ public class Talent implements Serializable {
     private String talent_id;
     private String user_id;
     private int age;
-    private String count_Number;
-    private String count_Password;
     private String eduction_level;
     private String home_location;
     private String name;
