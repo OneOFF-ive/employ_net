@@ -15,4 +15,8 @@ public class Admin implements Serializable {
     private String admin_id;
     private String username;
     private String password;
+    private String roles;
+    private String introduction;
+    private String avatar;
+    private String name;
 }
