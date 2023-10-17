@@ -1,6 +1,8 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
 import com.five.employnet.dto.AdminDto;
@@ -61,5 +63,27 @@ public class AdminController {
             adminService.save(admin);
             return R.success("注册成功");
         }
+    }
+
+    @GetMapping
+    public R<AdminDto> getOne() {
+        String adminId = BaseContext.getCurrentId();
+        Admin admin = adminService.getById(adminId);
+        if (admin != null) {
+            AdminDto adminDto = new AdminDto();
+            BeanUtils.copyProperties(admin, adminDto);
+            return R.success(adminDto);
+        }
+        return R.error("管理员不存在");
+    }
+
+    @PostMapping
+    public R<AdminDto> updateOne(@RequestBody Admin admin) {
+        String adminId = BaseContext.getCurrentId();
+        if (admin.getAdmin_id() == null) admin.setAdmin_id(adminId);
+        adminService.updateById(admin);
+        AdminDto adminDto = new AdminDto();
+        BeanUtils.copyProperties(admin, adminDto);
+        return R.success(adminDto);
     }
 }
