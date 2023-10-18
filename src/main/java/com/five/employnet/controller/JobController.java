@@ -86,4 +86,16 @@ public class JobController {
         }
         return R.success(null);
     }
+
+    @PostMapping("/save")
+    public R<Job> saveOne(@RequestBody Job job) {
+        jobService.save(job);
+        return R.success(job);
+    }
+
+    @DeleteMapping("/delete")
+    public R<String> deleteByIds(@RequestParam List<String> ids) {
+        jobService.removeByIds(ids);
+        return R.success("删除成功");
+    }
 }
