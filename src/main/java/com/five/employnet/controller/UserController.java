@@ -2,6 +2,7 @@ package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -152,8 +154,7 @@ public class UserController {
         User user = userService.getById(userId);
         if (user == null || !Objects.equals(user.getPassword(), password)) {
             return R.error("密码错误");
-        }
-        else {
+        } else {
             return R.success("密码正确");
         }
     }
@@ -170,8 +171,7 @@ public class UserController {
         if (targetUser != null) {
             if (userService.transfer(currentUser, targetUser)) {
                 return R.success("转移成功");
-            }
-            else return R.success("转移失败");
+            } else return R.success("转移失败");
         } else return R.error("用户不存在");
     }
 
@@ -254,12 +254,11 @@ public class UserController {
                     TalentCollection::getTalent_id
             ).toList();
             List<Talent> talentList = talentService.listByIds(talentIdList);
-            for (Talent talent:talentList) {
+            for (Talent talent : talentList) {
                 talentService.completeTalent(talent);
             }
             return R.success(talentList);
-        }
-        else return R.success(null);
+        } else return R.success(null);
     }
 
     //用户取消人才收藏
@@ -280,6 +279,20 @@ public class UserController {
         return R.success(company.getUser_id());
     }
 
+    @GetMapping("/all")
+    public R<Page<UserDto>> allUsers(@RequestParam int page, @RequestParam int pageSize) {
+        Page<UserDto> userDtoPage = new Page<>(page, pageSize);
+        Page<User> userPage = new Page<>(page, pageSize);
+        userService.page(userPage);
+        List<User> userList = userPage.getRecords();
+        List<UserDto> userDtoList = userList.stream().map((user -> {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+            return userDto;
+        })).toList();
+        userDtoPage.setRecords(userDtoList);
+        return R.success(userDtoPage);
+    }
 }
 
 
