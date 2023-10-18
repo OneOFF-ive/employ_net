@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -102,4 +103,23 @@ public class CompanyController {
         companyService.page(companyPage);
         return R.success(companyPage);
     }
+
+    @PostMapping("/save")
+    public R<Company> save(@RequestBody Company company) {
+        companyService.save(company);
+        return R.success(company);
+    }
+
+    @PostMapping("/update")
+    public R<Company> update(@RequestBody Company company) {
+        companyService.updateById(company);
+        return R.success(company);
+    }
+
+    @DeleteMapping("/delete")
+    public R<String> deleteByIds(@RequestParam List<Long> ids) {
+        companyService.removeByIds(ids);
+        return R.success("删除成功");
+    }
+
 }
