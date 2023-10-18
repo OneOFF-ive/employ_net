@@ -117,7 +117,7 @@ public class CompanyController {
     }
 
     @DeleteMapping("/delete")
-    public R<String> deleteByIds(@RequestParam List<Long> ids) {
+    public R<String> deleteByIds(@RequestParam List<String> ids) {
         companyService.removeByIds(ids);
         return R.success("删除成功");
     }
