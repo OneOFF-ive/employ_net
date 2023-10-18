@@ -293,6 +293,17 @@ public class UserController {
         userDtoPage.setRecords(userDtoList);
         return R.success(userDtoPage);
     }
+
+    @GetMapping("/id")
+    public R<UserDto> user(@RequestParam("id") String id) {
+        User user = userService.getById(id);
+        if (user != null) {
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+            return R.success(userDto);
+        }
+        return R.error("用户不存在");
+    }
 }
 
 
