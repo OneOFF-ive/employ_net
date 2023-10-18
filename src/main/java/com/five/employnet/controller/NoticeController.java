@@ -55,4 +55,9 @@ public class NoticeController {
         return R.success(messagePage);
     }
 
+    @DeleteMapping("/delete")
+    public R<String> deleteByIds(@RequestParam List<Long> ids) {
+        noticeService.removeByIds(ids);
+        return R.success("删除成功");
+    }
 }
