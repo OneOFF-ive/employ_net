@@ -1,6 +1,7 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
@@ -93,5 +94,12 @@ public class CompanyController {
         queryWrapper.eq(Company::getUser_id, userId);
         companyService.remove(queryWrapper);
         return R.success("删除成功");
+    }
+
+    @GetMapping("/all")
+    public R<Page<Company>> all(@RequestParam int page, @RequestParam int pageSize) {
+        Page<Company> companyPage = new Page<>(page, pageSize);
+        companyService.page(companyPage);
+        return R.success(companyPage);
     }
 }
