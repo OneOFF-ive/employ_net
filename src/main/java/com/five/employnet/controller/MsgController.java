@@ -1,5 +1,6 @@
 package com.five.employnet.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Msg;
 import com.five.employnet.service.MsgService;
@@ -43,5 +44,12 @@ public class MsgController {
     public R<String> delete(@RequestParam("id") String id) {
         msgService.removeById(id);
         return R.success("删除成功");
+    }
+
+    @GetMapping("/page")
+    public R<Page<Msg>> page(@RequestParam int page, @RequestParam int pageSize) {
+        Page<Msg> msgPage = new Page<>(page, pageSize);
+        msgService.page(msgPage);
+        return R.success(msgPage);
     }
 }

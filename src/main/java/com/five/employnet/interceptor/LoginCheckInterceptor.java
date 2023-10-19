@@ -1,11 +1,8 @@
 package com.five.employnet.interceptor;
 
-import com.alibaba.fastjson.JSON;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
-import com.five.employnet.common.R;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,5 +1,6 @@
 package com.five.employnet.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.R;
 import com.five.employnet.entity.Swiper;
 import com.five.employnet.service.SwiperService;
@@ -44,5 +45,12 @@ public class SwiperController {
     public R<Swiper> saveSwiper(@RequestBody Swiper swiper) {
         swiperService.save(swiper);
         return R.success(swiper);
+    }
+
+    @GetMapping("/page")
+    public R<Page<Swiper>> page(@RequestParam int page, @RequestParam int pageSize) {
+        Page<Swiper> swiperPage = new Page<>(page, pageSize);
+        swiperService.page(swiperPage);
+        return R.success(swiperPage);
     }
 }

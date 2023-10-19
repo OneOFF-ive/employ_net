@@ -122,4 +122,10 @@ public class CompanyController {
         return R.success("删除成功");
     }
 
+    @GetMapping("/count")
+    public R<Integer> count() {
+        int count = companyService.count();
+        return R.success(count);
+    }
+
 }

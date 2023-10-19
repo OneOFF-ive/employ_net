@@ -304,6 +304,12 @@ public class UserController {
         }
         return R.error("用户不存在");
     }
+
+    @GetMapping("/count")
+    public R<Integer> count() {
+        int count = userService.count();
+        return R.success(count);
+    }
 }
 
 
