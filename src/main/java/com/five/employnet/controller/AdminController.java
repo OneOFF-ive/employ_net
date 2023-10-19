@@ -20,7 +20,6 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class AdminController {
     final private AdminService adminService;
     final private JwtUtil jwtUtil;
@@ -43,7 +42,7 @@ public class AdminController {
             return R.error("密码错误");
         } else {
 
-            String adminId = admin.getAdmin_id();
+            String adminId = a.getAdmin_id();
             String token = jwtUtil.generateToken(String.valueOf(adminId));
             return R.success(token);
         }
@@ -64,8 +63,7 @@ public class AdminController {
         Admin a = adminService.getOne(queryWrapper);
         if (a != null) {
             return R.error("用户已存在");
-        }
-        else {
+        } else {
             adminService.save(admin);
             return R.success("注册成功");
         }
