@@ -1,6 +1,7 @@
 package com.five.employnet.controller;
 
 import com.five.employnet.common.R;
+import com.five.employnet.config.CorsConfig;
 import com.five.employnet.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController
 @RequestMapping("/common")
+@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class CommonController {
     @Value("${wechat.avatar-base-path}")
     private String avatarBasePath;

@@ -3,6 +3,7 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.R;
+import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.Notice;
 import com.five.employnet.entity.NoticeMessage;
 import com.five.employnet.service.NoticeMessageService;
@@ -15,6 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/notice")
+@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class NoticeController {
 
     final private NoticeService noticeService;

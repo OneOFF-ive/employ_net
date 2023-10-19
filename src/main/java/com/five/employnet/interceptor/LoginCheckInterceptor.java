@@ -2,6 +2,8 @@ package com.five.employnet.interceptor;
 
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
+import com.five.employnet.entity.Visitor;
+import com.five.employnet.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
@@ -9,14 +11,17 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Component
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
     JwtUtil jwtUtil;
-    public LoginCheckInterceptor(JwtUtil jwtUtil) {
+    final VisitorService visitorService;
+    public LoginCheckInterceptor(JwtUtil jwtUtil, VisitorService visitorService) {
         this.jwtUtil = jwtUtil;
+        this.visitorService = visitorService;
     }
 
     @Override
@@ -34,6 +39,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             if (jwtUtil.validateToken(authToken)) {
                 log.info("请求{}通过", request.getRequestURI());
                 String userId = jwtUtil.extractUserId(authToken);
+                visitorService.addVisitor(new Visitor(userId, request.getRemoteAddr(), LocalDateTime.now()));
                 BaseContext.setCurrentId(userId);
                 return true; // 继续处理请求
             } else {

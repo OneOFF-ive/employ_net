@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
+import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.Company;
 import com.five.employnet.service.CompanyService;
 import com.five.employnet.service.WeChatService;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/company")
+@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class CompanyController {
     private final CompanyService companyService;
     private final WeChatService weChatService;

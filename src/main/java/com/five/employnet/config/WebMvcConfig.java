@@ -3,6 +3,7 @@ package com.five.employnet.config;
 import com.five.employnet.common.JacksonObjectMapper;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.interceptor.LoginCheckInterceptor;
+import com.five.employnet.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +21,11 @@ import java.util.List;
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     final JwtUtil jwtUtil;
+    final VisitorService visitorService;
 
-    public WebMvcConfig(JwtUtil jwtUtil) {
+    public WebMvcConfig(JwtUtil jwtUtil, VisitorService visitorService) {
         this.jwtUtil = jwtUtil;
+        this.visitorService = visitorService;
     }
 
     @Bean
@@ -32,9 +35,9 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckInterceptor(jwtUtil))
+        registry.addInterceptor(new LoginCheckInterceptor(jwtUtil, visitorService))
                 .addPathPatterns("/**")
-                .excludePathPatterns("/user/login", "/admin/login", "/common/*");
+                .excludePathPatterns("/user/login", "/admin/login", "/common/*", "/admin/test");
     }
 
     @Override

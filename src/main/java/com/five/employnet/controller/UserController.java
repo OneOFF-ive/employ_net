@@ -14,8 +14,11 @@ import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +68,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public R<UserDto> login(@RequestBody Map<String, String> requestBody) {
+    public R<UserDto> login(HttpServletRequest request, @RequestBody Map<String, String> requestBody) {
+
         String code = requestBody.get("code");
 
         log.info(code);

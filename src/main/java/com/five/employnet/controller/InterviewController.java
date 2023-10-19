@@ -3,6 +3,7 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
+import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Interview;
 import com.five.employnet.entity.Talent;
@@ -21,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/interview")
+@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class InterviewController {
     final private InterviewService interviewService;
     final private InterviewViewService interviewViewService;

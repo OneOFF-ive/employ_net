@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
+import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Job;
 import com.five.employnet.service.CompanyService;
@@ -18,6 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/job")
+@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class JobController {
     private final JobService jobService;
     private final JobViewService jobViewService;
