@@ -48,6 +48,11 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/logout")
+    public R<String> logout() {
+        return R.success("1");
+    }
+
     @GetMapping("test")
     public String test() {
         return "hello";

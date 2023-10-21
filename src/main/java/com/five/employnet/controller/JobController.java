@@ -100,4 +100,9 @@ public class JobController {
         jobService.removeByIds(ids);
         return R.success("删除成功");
     }
+
+    @GetMapping("/count")
+    public R<Integer> count() {
+        return R.success(jobService.count());
+    }
 }

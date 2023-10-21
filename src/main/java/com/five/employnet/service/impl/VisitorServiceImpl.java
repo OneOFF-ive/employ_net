@@ -26,12 +26,13 @@ public class VisitorServiceImpl extends ServiceImpl<VisitorMapper, Visitor> impl
 
     @Override
     public void scheduleSaveVisitorRecordsToDatabase() {
-        executorService.scheduleWithFixedDelay(this::saveVisitorRecordsToDatabase, 0, 1, TimeUnit.HOURS);
+        executorService.scheduleWithFixedDelay(this::saveVisitorRecordsToDatabase, 0, 1, TimeUnit.MINUTES);
     }
 
     @Override
     @Transactional
     public void saveVisitorRecordsToDatabase() {
+        log.info("saving.............................");
         // 将内存中的访客记录写入数据库
         if (!visitorList.isEmpty()) {
             this.saveBatch(visitorList);

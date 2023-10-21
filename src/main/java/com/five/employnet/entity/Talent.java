@@ -44,4 +44,6 @@ public class Talent implements Serializable {
 
     @JsonIgnore
     private String intention_msg;
+
+    private String status;
 }

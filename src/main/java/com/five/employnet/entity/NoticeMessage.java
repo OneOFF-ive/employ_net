@@ -29,4 +29,7 @@ public class NoticeMessage implements Serializable {
     private String origin;
     private String img_url;
     private String file_url;
+    private String content_short;
+    private Integer importance;
+    private String status;
 }

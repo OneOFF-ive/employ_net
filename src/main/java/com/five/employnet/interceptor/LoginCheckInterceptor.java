@@ -19,6 +19,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
     JwtUtil jwtUtil;
     final VisitorService visitorService;
+
     public LoginCheckInterceptor(JwtUtil jwtUtil, VisitorService visitorService) {
         this.jwtUtil = jwtUtil;
         this.visitorService = visitorService;
@@ -26,7 +27,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("拦截到请求:{}", request.getRequestURI());
+        log.info("拦截到请求:{} {}", request.getMethod(), request.getRequestURI());
 
         String authorizationHeader = request.getHeader("Authorization");
 

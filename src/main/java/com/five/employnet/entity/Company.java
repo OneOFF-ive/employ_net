@@ -32,4 +32,5 @@ public class Company implements Serializable {
     private String link_person;     //联系人
     private String phone_number;
     private String annex_list;   //附件列表
+    private String state;
 }

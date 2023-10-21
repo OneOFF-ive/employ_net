@@ -75,8 +75,7 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         if (talent != null) {
             completeTalent(talent);
             return talent;
-        }
-        else return null;
+        } else return null;
     }
 
     @Override
@@ -109,19 +108,25 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
 
     private void saveDetail(Talent newTalent, String talentId) {
         List<EductionExperience> eductionExperienceList = newTalent.getEduction_experience();
-        for (EductionExperience eductionExperience : eductionExperienceList) {
-            eductionExperience.setTalent_id(talentId);
+        if (eductionExperienceList != null) {
+            for (EductionExperience eductionExperience : eductionExperienceList) {
+                eductionExperience.setTalent_id(talentId);
+            }
+            eductionExperienceService.saveBatch(eductionExperienceList);
         }
-        eductionExperienceService.saveBatch(eductionExperienceList);
 
         List<JobIntention> jobIntentionList = newTalent.getJob_intention();
-        for (JobIntention jobIntention : jobIntentionList) {
-            jobIntention.setTalent_id(talentId);
+        if (jobIntentionList != null) {
+            for (JobIntention jobIntention : jobIntentionList) {
+                jobIntention.setTalent_id(talentId);
+            }
+            jobIntentionService.saveBatch(jobIntentionList);
         }
-        jobIntentionService.saveBatch(jobIntentionList);
 
         Experience experience = newTalent.getExperience();
-        experience.setTalent_id(talentId);
-        experienceService.saveOneExperience(experience);
+        if (experience != null) {
+            experience.setTalent_id(talentId);
+            experienceService.saveOneExperience(experience);
+        }
     }
 }

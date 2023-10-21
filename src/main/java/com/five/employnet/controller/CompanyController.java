@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @Slf4j
@@ -73,8 +74,7 @@ public class CompanyController {
         if (company == null) {
             newCompany.setUser_id(userId);
             companyService.save(newCompany);
-        }
-        else {
+        } else {
             String companyId = company.getCompany_id();
             newCompany.setCompany_id(companyId);
             companyService.updateById(newCompany);
@@ -108,8 +108,13 @@ public class CompanyController {
 
     @PostMapping("/save")
     public R<Company> save(@RequestBody Company company) {
-        companyService.save(company);
-        return R.success(company);
+        String userId = company.getUser_id();
+        Company c = companyService.getCompanyByUserId(userId);
+        if (c == null) {
+            companyService.save(company);
+            return R.success(company);
+        }
+        return R.error("该用户名下已有公司");
     }
 
     @PostMapping("/update")
@@ -118,8 +123,9 @@ public class CompanyController {
         return R.success(company);
     }
 
-    @DeleteMapping("/delete")
-    public R<String> deleteByIds(@RequestParam List<String> ids) {
+    @PostMapping("/delete")
+    public R<String> deleteByIds(@RequestBody Map<String, List<String>> requestBody) {
+        List<String> ids = requestBody.get("ids");
         companyService.removeByIds(ids);
         return R.success("删除成功");
     }
@@ -128,6 +134,18 @@ public class CompanyController {
     public R<Integer> count() {
         int count = companyService.count();
         return R.success(count);
+    }
+
+    @GetMapping("/page")
+    public R<Page<Company>> page(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize,
+                                 String name, String company_class) {
+        Page<Company> companyPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<Company> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper
+                .eq(!Objects.equals(name, "") && name != null, Company::getName, name)
+                .eq(!Objects.equals(company_class, "") && company_class != null, Company::getCompany_class, company_class);
+        companyService.page(companyPage, queryWrapper);
+        return R.success(companyPage);
     }
 
 }

@@ -11,7 +11,10 @@ import com.five.employnet.service.NoticeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,6 +34,36 @@ public class NoticeController {
     public R<Notice> save(@RequestBody Notice notice) {
         noticeService.saveOneNotice(notice);
         return R.success(notice);
+    }
+
+    @PostMapping("/add/message")
+    public R<NoticeMessage> add(@RequestBody NoticeMessage noticeMessage) {
+        LocalDateTime dateTime = noticeMessage.getTime();
+        LocalDate date = dateTime.toLocalDate();
+        LambdaQueryWrapper<Notice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Notice::getDate, date);
+        Notice notice = noticeService.getOne(queryWrapper);
+        if (notice == null) {
+            notice = new Notice();
+            notice.setDate(date);
+            noticeService.save(notice);
+        }
+        noticeMessage.setNotice_id(notice.getLid());
+        noticeMessageService.save(noticeMessage);
+        return R.success(noticeMessage);
+    }
+
+    @PostMapping("/remove/message")
+    public R<String> remove(@RequestBody Map<String, List<String>> requetBody) {
+        List<String> ids = requetBody.get("ids");
+        noticeMessageService.removeByIds(ids);
+        return R.success("删除成功");
+    }
+
+    @PostMapping("/update/message")
+    public R<NoticeMessage> update(@RequestBody NoticeMessage noticeMessage) {
+        noticeMessageService.updateById(noticeMessage);
+        return R.success(noticeMessage);
     }
 
     @GetMapping("/page")
