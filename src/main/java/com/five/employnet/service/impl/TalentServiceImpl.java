@@ -32,10 +32,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public void saveOneTalent(Talent talent) {
-        List<JobIntention> jobIntention = talent.getJob_intention();
-        if (jobIntention != null) {
-            talent.setIntention_msg(jobIntention.toString());
-        }
+//        List<JobIntention> jobIntention = talent.getJob_intention();
+//        if (jobIntention != null) {
+//            talent.setIntention_msg(jobIntention.toString());
+//        }
         this.save(talent);
         String talentId = talent.getTalent_id();
 
@@ -51,10 +51,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         List<EductionExperience> eductionExperienceList = eductionExperienceService.list(eductionExperienceQueryWrapper);
         talent.setEduction_experience(eductionExperienceList);
 
-        LambdaQueryWrapper<JobIntention> jobIntentionQueryWrapper = new LambdaQueryWrapper<>();
-        jobIntentionQueryWrapper.eq(JobIntention::getTalent_id, talentId);
-        List<JobIntention> jobIntentionList = jobIntentionService.list(jobIntentionQueryWrapper);
-        talent.setJob_intention(jobIntentionList);
+//        LambdaQueryWrapper<JobIntention> jobIntentionQueryWrapper = new LambdaQueryWrapper<>();
+//        jobIntentionQueryWrapper.eq(JobIntention::getTalent_id, talentId);
+//        List<JobIntention> jobIntentionList = jobIntentionService.list(jobIntentionQueryWrapper);
+//        talent.setJob_intention(jobIntentionList);
 
         Experience experience = experienceService.getOneByTalentId(talentId);
         talent.setExperience(experience);
@@ -81,10 +81,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public Talent update(Talent newTalent) {
-        List<JobIntention> jobIntention = newTalent.getJob_intention();
-        if (jobIntention != null) {
-            newTalent.setIntention_msg(jobIntention.toString());
-        }
+//        List<JobIntention> jobIntention = newTalent.getJob_intention();
+//        if (jobIntention != null) {
+//            newTalent.setIntention_msg(jobIntention.toString());
+//        }
         this.updateById(newTalent);
         String talentId = newTalent.getTalent_id();
 
@@ -95,10 +95,10 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
         LambdaQueryWrapper<Experience> experienceWrapper = new LambdaQueryWrapper<>();
         experienceWrapper.eq(Experience::getTalent_id, talentId);
         experienceService.remove(experienceWrapper);
-
-        LambdaQueryWrapper<JobIntention> jobIntentionWrapper = new LambdaQueryWrapper<>();
-        jobIntentionWrapper.eq(JobIntention::getTalent_id, talentId);
-        jobIntentionService.remove(jobIntentionWrapper);
+//
+//        LambdaQueryWrapper<JobIntention> jobIntentionWrapper = new LambdaQueryWrapper<>();
+//        jobIntentionWrapper.eq(JobIntention::getTalent_id, talentId);
+//        jobIntentionService.remove(jobIntentionWrapper);
 
 
         saveDetail(newTalent, talentId);
@@ -115,13 +115,13 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
             eductionExperienceService.saveBatch(eductionExperienceList);
         }
 
-        List<JobIntention> jobIntentionList = newTalent.getJob_intention();
-        if (jobIntentionList != null) {
-            for (JobIntention jobIntention : jobIntentionList) {
-                jobIntention.setTalent_id(talentId);
-            }
-            jobIntentionService.saveBatch(jobIntentionList);
-        }
+//        List<JobIntention> jobIntentionList = newTalent.getJob_intention();
+//        if (jobIntentionList != null) {
+//            for (JobIntention jobIntention : jobIntentionList) {
+//                jobIntention.setTalent_id(talentId);
+//            }
+//            jobIntentionService.saveBatch(jobIntentionList);
+//        }
 
         Experience experience = newTalent.getExperience();
         if (experience != null) {

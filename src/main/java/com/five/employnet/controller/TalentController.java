@@ -62,7 +62,7 @@ public class TalentController {
                 .like(education_level != null && !education_level.isEmpty(), Talent::getEduction_level, education_level)
                 .like(sex != null && !sex.isEmpty(), Talent::getSex, sex)
                 .like(state != null && !state.isEmpty(), Talent::getState, state)
-                .like(job_intention != null && !job_intention.isEmpty(), Talent::getIntention_msg, job_intention)
+                .like(job_intention != null && !job_intention.isEmpty(), Talent::getJob_intention, job_intention)
                 .like(name != null && !name.isEmpty(), Talent::getName, name);
         talentService.page(talentPage, talentLambdaQueryWrapper);
         List<Talent> talentList = talentPage.getRecords();
@@ -93,7 +93,7 @@ public class TalentController {
                 .or()
                 .like(prompt != null, Talent::getState, prompt)
                 .or()
-                .like(prompt != null, Talent::getIntention_msg, prompt);
+                .like(prompt != null, Talent::getJob_intention, prompt);
         talentService.page(talentPage, talentLambdaQueryWrapper);
         List<Talent> talentList = talentPage.getRecords();
 //

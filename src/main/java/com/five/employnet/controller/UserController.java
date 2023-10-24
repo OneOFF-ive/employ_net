@@ -9,21 +9,19 @@ import com.five.employnet.common.R;
 import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.*;
 import com.five.employnet.service.*;
+import com.five.employnet.view.JobView;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -37,8 +35,9 @@ public class UserController {
     private final TalentCollectionService talentCollectionService;
     private final TalentService talentService;
     private final CompanyService companyService;
+    private final JobViewService jobViewService;
 
-    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService, TalentCollectionService talentCollectionService, TalentService talentService, CompanyService companyService) {
+    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService, TalentCollectionService talentCollectionService, TalentService talentService, CompanyService companyService, JobViewService jobViewService) {
         this.userService = userService;
         this.weChatService = weChatService;
         this.jwtUtil = jwtUtil;
@@ -47,6 +46,7 @@ public class UserController {
         this.talentCollectionService = talentCollectionService;
         this.talentService = talentService;
         this.companyService = companyService;
+        this.jobViewService = jobViewService;
     }
 
     @GetMapping("/auth")
@@ -181,7 +181,7 @@ public class UserController {
 
     //查询用户收藏的职位
     @GetMapping("/job_collection")
-    public R<List<Job>> getUserCollection() {
+    public R<List<JobView>> getUserCollection() {
         String userId = BaseContext.getCurrentId();
 
         LambdaQueryWrapper<JobCollection> queryWrapper = new LambdaQueryWrapper<>();
@@ -190,9 +190,9 @@ public class UserController {
         List<String> jobIdList = jobCollections.stream().map(
                 JobCollection::getJob_id
         ).toList();
-        List<Job> resInfo = new ArrayList<>();
+        List<JobView> resInfo = new ArrayList<>();
         if (!jobIdList.isEmpty()) {
-            resInfo = jobService.listByIds(jobIdList);
+            resInfo = jobViewService.listByIds(jobIdList);
         }
         return R.success(resInfo);
     }

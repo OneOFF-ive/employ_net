@@ -18,4 +18,5 @@ public class JobView extends Job {
     private String business;
     private String company;
     private String avatar_url;
+    private String state;
 }

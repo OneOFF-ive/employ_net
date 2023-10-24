@@ -39,11 +39,9 @@ public class Talent implements Serializable {
     @TableField(exist = false)
     private Experience experience;
 
-    @TableField(exist = false)
-    private List<JobIntention> job_intention;
-
-    @JsonIgnore
-    private String intention_msg;
+//    @TableField(exist = false)
+//    private List<JobIntention> job_intention;
+    private String job_intention;
 
     private String status;
 }

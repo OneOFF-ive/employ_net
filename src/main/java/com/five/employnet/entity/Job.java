@@ -27,4 +27,5 @@ public class Job implements Serializable {
     private String welfare;
     private String address;
     private String remark;
+    private String action;
 }

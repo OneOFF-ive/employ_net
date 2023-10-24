@@ -26,7 +26,7 @@ public class VisitorServiceImpl extends ServiceImpl<VisitorMapper, Visitor> impl
 
     @Override
     public void scheduleSaveVisitorRecordsToDatabase() {
-        executorService.scheduleWithFixedDelay(this::saveVisitorRecordsToDatabase, 0, 1, TimeUnit.MINUTES);
+        executorService.scheduleWithFixedDelay(this::saveVisitorRecordsToDatabase, 0, 1, TimeUnit.HOURS);
     }
 
     @Override
