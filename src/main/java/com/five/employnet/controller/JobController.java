@@ -107,4 +107,12 @@ public class JobController {
     public R<Integer> count() {
         return R.success(jobService.count());
     }
+
+    @GetMapping("/get/job")
+    public R<Job> getJob(@RequestParam("job_id") String id) {
+        LambdaQueryWrapper<JobView> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(id != null, JobView::getJob_id, id);
+        Job job = jobViewService.getOne(queryWrapper);
+        return R.success(job);
+    }
 }
