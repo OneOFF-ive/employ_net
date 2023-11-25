@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/notice")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class NoticeController {
 
     final private NoticeService noticeService;

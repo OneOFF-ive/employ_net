@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/swiper")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class SwiperController {
     final private SwiperService swiperService;
 

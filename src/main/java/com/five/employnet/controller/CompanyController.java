@@ -20,7 +20,7 @@ import java.util.Objects;
 @RestController
 @Slf4j
 @RequestMapping("/company")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class CompanyController {
     private final CompanyService companyService;
     private final WeChatService weChatService;

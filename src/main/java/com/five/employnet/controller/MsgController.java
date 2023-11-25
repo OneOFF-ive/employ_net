@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/msg")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class MsgController {
 
     final private MsgService msgService;

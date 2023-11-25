@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/interview")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class InterviewController {
     final private InterviewService interviewService;
     final private InterviewViewService interviewViewService;

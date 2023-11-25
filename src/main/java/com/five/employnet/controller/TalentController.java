@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/talent")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class TalentController {
 
     final private TalentService talentService;

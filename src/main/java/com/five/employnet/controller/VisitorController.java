@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/visitor")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class VisitorController {
     final private VisitorService visitorService;
 

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController
 @RequestMapping("/common")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class CommonController {
     @Value("${wechat.avatar-base-path}")
     private String avatarBasePath;

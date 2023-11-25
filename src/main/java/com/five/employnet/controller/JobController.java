@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/job")
-@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
+//@CrossOrigin(origins = CorsConfig.origins, allowCredentials = "true")
 public class JobController {
     private final JobService jobService;
     private final JobViewService jobViewService;
