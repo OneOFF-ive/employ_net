@@ -9,6 +9,7 @@ import com.five.employnet.service.VisitorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class VisitorController {
     @GetMapping("/view/week/{date}")
     R<List<Integer>> getViewWeekAt(@PathVariable String date) {
         LocalDate currentDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        List<LocalDate> dateList = getSortedDateRange(currentDate);
+        List<LocalDate> dateList = getWeekDateRange(currentDate);
         List<Integer> countList = new ArrayList<>();
         for (LocalDate localDate : dateList) {
             int count = visitorService.getViewAt(localDate);
@@ -71,7 +72,7 @@ public class VisitorController {
     @GetMapping("/number/week/{date}")
     R<List<Integer>> getNumberWeekAt(@PathVariable String date) {
         LocalDate currentDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        List<LocalDate> dateList = getSortedDateRange(currentDate);
+        List<LocalDate> dateList = getWeekDateRange(currentDate);
         List<Integer> countList = new ArrayList<>();
         for (LocalDate localDate : dateList) {
             int count = visitorService.getNumberAt(localDate);
@@ -80,23 +81,21 @@ public class VisitorController {
         return R.success(countList);
     }
 
-    // 获取前三天、当前日期和后三天的有序日期列表
-    private static List<LocalDate> getSortedDateRange(LocalDate currentDate) {
-        List<LocalDate> dateList = new ArrayList<>();
+    // 获取给定日期所在周的所有日期
+    private static List<LocalDate> getWeekDateRange(LocalDate currentDate) {
+        List<LocalDate> weekDates = new ArrayList<>();
 
-        // 获取前三天的日期
-        for (int i = 3; i > 0; i--) {
-            dateList.add(currentDate.minusDays(i));
+        // 获取周一的日期
+        LocalDate monday = currentDate;
+        while (monday.getDayOfWeek() != DayOfWeek.MONDAY) {
+            monday = monday.minusDays(1);
         }
 
-        // 当前日期
-        dateList.add(currentDate);
-
-        // 获取后三天的日期
-        for (int i = 1; i <= 3; i++) {
-            dateList.add(currentDate.plusDays(i));
+        // 添加本周的日期
+        for (int i = 0; i < 7; i++) {
+            weekDates.add(monday.plusDays(i));
         }
 
-        return dateList;
+        return weekDates;
     }
 }
