@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,10 +18,12 @@ public class Visitor implements Serializable {
     private String ip;
     private String user_id;
     private LocalDateTime time;
+    private LocalDate date;
 
-    public Visitor(String user_id, String ip, LocalDateTime time) {
+    public Visitor(String user_id, String ip, LocalDateTime time, LocalDate date) {
         this.ip = ip;
         this.user_id = user_id;
         this.time = time;
+        this.date = date;
     }
 }

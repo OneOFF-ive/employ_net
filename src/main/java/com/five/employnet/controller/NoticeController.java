@@ -79,13 +79,15 @@ public class NoticeController {
     }
 
     @GetMapping("/search")
-    public R<Page<NoticeMessage>> search(@RequestParam int page, @RequestParam int pageSize, String prompt) {
+    public R<Page<NoticeMessage>> search(@RequestParam int page, @RequestParam int pageSize,
+                                         String prompt, String status) {
         Page<NoticeMessage> messagePage = new Page<>(page, pageSize);
         LambdaQueryWrapper<NoticeMessage> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .like(prompt != null, NoticeMessage::getLab, prompt)
                 .or()
                 .like(prompt != null, NoticeMessage::getTitle, prompt);
+        queryWrapper.like(status != null, NoticeMessage::getStatus, status);
         noticeMessageService.page(messagePage, queryWrapper);
         return R.success(messagePage);
     }

@@ -15,4 +15,5 @@ public class Msg  implements Serializable {
     private String id;
     private String title;
     private String url;
+    private String state;
 }

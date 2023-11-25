@@ -54,4 +54,16 @@ public class CommonService {
             log.error(e.getMessage());
         }
     }
+
+    public boolean delete(String fileName, String basePath) {
+        // 创建一个File对象，表示要删除的文件
+        File file = new File(basePath + fileName);
+
+        // 检查文件是否存在
+        if (file.exists()) {
+            // 尝试删除文件
+            return file.delete();
+        }
+        return false;
+    }
 }

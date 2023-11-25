@@ -48,4 +48,14 @@ public class CommonController {
     public void downloadPdf(String name, HttpServletResponse response) {
         commonService.download(name, response, annexBasePath);
     }
+
+    @DeleteMapping("/deletePdf")
+    public void deletePdf(String name) {
+        commonService.delete(name, annexBasePath);
+    }
+
+    @DeleteMapping("/deleteImage")
+    public void deleteImage(String name) {
+        commonService.delete(name, avatarBasePath);
+    }
 }

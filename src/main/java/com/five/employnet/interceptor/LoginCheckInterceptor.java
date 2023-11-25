@@ -11,6 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -40,7 +41,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             if (jwtUtil.validateToken(authToken)) {
                 log.info("请求{}通过", request.getRequestURI());
                 String userId = jwtUtil.extractUserId(authToken);
-                visitorService.addVisitor(new Visitor(userId, request.getRemoteAddr(), LocalDateTime.now()));
+                visitorService.addVisitor(new Visitor(userId, request.getRemoteAddr(), LocalDateTime.now(), LocalDate.now()));
                 BaseContext.setCurrentId(userId);
                 return true; // 继续处理请求
             } else {

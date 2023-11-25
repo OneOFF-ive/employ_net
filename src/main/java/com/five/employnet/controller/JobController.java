@@ -59,7 +59,9 @@ public class JobController {
                 .or()
                 .like(prompt !=null, JobView::getAddress, prompt)
                 .or()
-                .like(prompt != null, Job::getTitle, prompt);
+                .like(prompt != null, Job::getTitle, prompt)
+                .or()
+                .like(prompt != null, Job::getAction, prompt);
         jobViewService.page(pageInfo, jobLambdaQueryWrapper);
         List<JobView> jobViewList = pageInfo.getRecords();
 
