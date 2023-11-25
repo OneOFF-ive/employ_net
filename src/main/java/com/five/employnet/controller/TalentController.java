@@ -156,4 +156,10 @@ public class TalentController {
             return R.success(talentService.update(newTalent));
         }
     }
+
+    @GetMapping("/count")
+    public R<Integer> number() {
+        int count = talentService.count();
+        return R.success(count);
+    }
 }
