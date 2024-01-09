@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.JwtUtil;
 import com.five.employnet.common.R;
+import com.five.employnet.common.ValidateCodeUtils;
 import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.*;
 import com.five.employnet.service.*;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -37,7 +40,9 @@ public class UserController {
     private final CompanyService companyService;
     private final JobViewService jobViewService;
 
-    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService, TalentCollectionService talentCollectionService, TalentService talentService, CompanyService companyService, JobViewService jobViewService) {
+    private final RedisTemplate<Object, Object> redisTemplate;
+
+    public UserController(UserService userService, WeChatService weChatService, JwtUtil jwtUtil, JobCollectionService jobCollectionService, JobService jobService, TalentCollectionService talentCollectionService, TalentService talentService, CompanyService companyService, JobViewService jobViewService, RedisTemplate<Object, Object> redisTemplate) {
         this.userService = userService;
         this.weChatService = weChatService;
         this.jwtUtil = jwtUtil;
@@ -47,6 +52,7 @@ public class UserController {
         this.talentService = talentService;
         this.companyService = companyService;
         this.jobViewService = jobViewService;
+        this.redisTemplate = redisTemplate;
     }
 
     @GetMapping("/auth")
@@ -313,6 +319,59 @@ public class UserController {
     public R<Integer> count() {
         int count = userService.count();
         return R.success(count);
+    }
+
+    @PostMapping("/send/code")
+    public R<String> sendCode(@RequestBody User user) {
+        String phone = user.getPhone_number();
+        if (!phone.isEmpty()) {
+            String code = ValidateCodeUtils.generateValidateCode(4).toString();
+            log.info("code = " + code);
+//            SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
+            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+            return R.success("手机验证码短信发送成功");
+        }
+        return R.error("手机验证码短信发送失败");
+    }
+
+    @PostMapping("/verify/code")
+    public R<UserDto> verifyCode(@RequestBody Map<String, String> req) {
+        String phone = req.get("phone_number");
+        String code = req.get("code");
+
+        String codeInRedis = (String) redisTemplate.opsForValue().get(phone);
+
+        if (codeInRedis != null && codeInRedis.equals(code)) {
+            LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(User::getPhone_number, phone);
+            User user = userService.getOne(queryWrapper);
+            if (user == null) {
+                user = new User();
+                user.setPhone_number(phone);
+                userService.save(user);
+            }
+            UserDto userDto = new UserDto();
+            BeanUtils.copyProperties(user, userDto);
+            R<UserDto> res = R.success(userDto);
+
+            String userId = user.getUser_id();
+            String token = jwtUtil.generateToken(userId);
+            res.add("token", token);
+
+            LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
+            Company company = companyService.getCompanyByUserId(userId);
+            if (company != null) {
+                res.add("company", company);
+            }
+
+            LambdaQueryWrapper<Talent> talentQueryWrapper = new LambdaQueryWrapper<>();
+            Talent talent = talentService.getTalentByUserId(userId);
+            if (talent != null) {
+                res.add("talent", talent);
+            }
+            return res;
+        }
+        return R.error("验证失败");
     }
 }
 
