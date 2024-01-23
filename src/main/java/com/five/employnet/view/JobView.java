@@ -14,7 +14,9 @@ public class JobView extends Job {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private String lab;
+    private String company_class;
+    private String link_person;
+    private String company_scale;
     private String business;
     private String company;
     private String avatar_url;

@@ -51,7 +51,7 @@ public class JobController {
         jobLambdaQueryWrapper
                 .like(prompt != null, JobView::getJob_lab, prompt)
                 .or()
-                .like(prompt != null, JobView::getLab, prompt)
+                .like(prompt != null, JobView::getCompany_class, prompt)
                 .or()
                 .like(prompt != null, JobView::getCompany, prompt)
                 .or()
@@ -63,7 +63,6 @@ public class JobController {
                 .or()
                 .like(prompt != null, Job::getAction, prompt);
         jobViewService.page(pageInfo, jobLambdaQueryWrapper);
-        List<JobView> jobViewList = pageInfo.getRecords();
 
         return R.success(pageInfo);
     }
