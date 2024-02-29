@@ -41,8 +41,6 @@ public class Job implements Serializable {
     private String city;
     // 市区
     private String urban;
-    // 县城
-    private String county;
     // 地址
     private String address;
     // 位置(用于地图定位)
