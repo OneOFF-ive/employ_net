@@ -2,15 +2,11 @@ package com.five.employnet.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.five.employnet.entity.EductionExperience;
+import com.five.employnet.entity.EducationExperience;
 import com.five.employnet.entity.Experience;
-import com.five.employnet.entity.JobIntention;
 import com.five.employnet.entity.Talent;
 import com.five.employnet.mapper.TalentMapper;
-import com.five.employnet.service.EductionExperienceService;
-import com.five.employnet.service.ExperienceService;
-import com.five.employnet.service.JobIntentionService;
-import com.five.employnet.service.TalentService;
+import com.five.employnet.service.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +15,12 @@ import java.util.List;
 @Service
 public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> implements TalentService {
 
-    final EductionExperienceService eductionExperienceService;
+    final EducationExperienceService educationExperienceService;
     final JobIntentionService jobIntentionService;
     final ExperienceService experienceService;
 
-    public TalentServiceImpl(EductionExperienceService eductionExperienceService, JobIntentionService jobIntentionService, ExperienceService experienceService) {
-        this.eductionExperienceService = eductionExperienceService;
+    public TalentServiceImpl(EducationExperienceService educationExperienceService, JobIntentionService jobIntentionService, ExperienceService experienceService) {
+        this.educationExperienceService = educationExperienceService;
         this.jobIntentionService = jobIntentionService;
         this.experienceService = experienceService;
     }
@@ -32,13 +28,8 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public void saveOneTalent(Talent talent) {
-//        List<JobIntention> jobIntention = talent.getJob_intention();
-//        if (jobIntention != null) {
-//            talent.setIntention_msg(jobIntention.toString());
-//        }
         this.save(talent);
         String talentId = talent.getTalent_id();
-
         saveDetail(talent, talentId);
     }
 
@@ -46,18 +37,15 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     public void completeTalent(Talent talent) {
         String talentId = talent.getTalent_id();
 
-        LambdaQueryWrapper<EductionExperience> eductionExperienceQueryWrapper = new LambdaQueryWrapper<>();
-        eductionExperienceQueryWrapper.eq(EductionExperience::getTalent_id, talentId);
-        List<EductionExperience> eductionExperienceList = eductionExperienceService.list(eductionExperienceQueryWrapper);
-        talent.setEduction_experience(eductionExperienceList);
+        LambdaQueryWrapper<EducationExperience> eductionExperienceQueryWrapper = new LambdaQueryWrapper<>();
+        eductionExperienceQueryWrapper.eq(EducationExperience::getTalent_id, talentId);
+        List<EducationExperience> educationExperienceList = educationExperienceService.list(eductionExperienceQueryWrapper);
+        talent.setEducation_experience(educationExperienceList);
 
-//        LambdaQueryWrapper<JobIntention> jobIntentionQueryWrapper = new LambdaQueryWrapper<>();
-//        jobIntentionQueryWrapper.eq(JobIntention::getTalent_id, talentId);
-//        List<JobIntention> jobIntentionList = jobIntentionService.list(jobIntentionQueryWrapper);
-//        talent.setJob_intention(jobIntentionList);
-
-        Experience experience = experienceService.getOneByTalentId(talentId);
-        talent.setExperience(experience);
+        LambdaQueryWrapper<Experience> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Experience::getTalent_id, talentId);
+        List<Experience> experienceList = experienceService.list(queryWrapper);
+        talent.setExperiences(experienceList);
     }
 
     @Override
@@ -81,25 +69,16 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     @Override
     @Transactional
     public Talent update(Talent newTalent) {
-//        List<JobIntention> jobIntention = newTalent.getJob_intention();
-//        if (jobIntention != null) {
-//            newTalent.setIntention_msg(jobIntention.toString());
-//        }
         this.updateById(newTalent);
         String talentId = newTalent.getTalent_id();
 
-        LambdaQueryWrapper<EductionExperience> eductionExperienceWrapper = new LambdaQueryWrapper<>();
-        eductionExperienceWrapper.eq(EductionExperience::getTalent_id, talentId);
-        eductionExperienceService.remove(eductionExperienceWrapper);
+        LambdaQueryWrapper<EducationExperience> eductionExperienceWrapper = new LambdaQueryWrapper<>();
+        eductionExperienceWrapper.eq(EducationExperience::getTalent_id, talentId);
+        educationExperienceService.remove(eductionExperienceWrapper);
 
         LambdaQueryWrapper<Experience> experienceWrapper = new LambdaQueryWrapper<>();
         experienceWrapper.eq(Experience::getTalent_id, talentId);
         experienceService.remove(experienceWrapper);
-//
-//        LambdaQueryWrapper<JobIntention> jobIntentionWrapper = new LambdaQueryWrapper<>();
-//        jobIntentionWrapper.eq(JobIntention::getTalent_id, talentId);
-//        jobIntentionService.remove(jobIntentionWrapper);
-
 
         saveDetail(newTalent, talentId);
 
@@ -107,26 +86,20 @@ public class TalentServiceImpl extends ServiceImpl<TalentMapper, Talent> impleme
     }
 
     private void saveDetail(Talent newTalent, String talentId) {
-        List<EductionExperience> eductionExperienceList = newTalent.getEduction_experience();
-        if (eductionExperienceList != null) {
-            for (EductionExperience eductionExperience : eductionExperienceList) {
-                eductionExperience.setTalent_id(talentId);
+        List<EducationExperience> educationExperienceList = newTalent.getEducation_experience();
+        if (educationExperienceList != null) {
+            for (EducationExperience educationExperience : educationExperienceList) {
+                educationExperience.setTalent_id(talentId);
             }
-            eductionExperienceService.saveBatch(eductionExperienceList);
+            educationExperienceService.saveBatch(educationExperienceList);
         }
 
-//        List<JobIntention> jobIntentionList = newTalent.getJob_intention();
-//        if (jobIntentionList != null) {
-//            for (JobIntention jobIntention : jobIntentionList) {
-//                jobIntention.setTalent_id(talentId);
-//            }
-//            jobIntentionService.saveBatch(jobIntentionList);
-//        }
-
-        Experience experience = newTalent.getExperience();
-        if (experience != null) {
-            experience.setTalent_id(talentId);
-            experienceService.saveOneExperience(experience);
+        List<Experience> experienceList = newTalent.getExperiences();
+        if (experienceList != null) {
+            for (Experience experience : experienceList) {
+                experience.setTalent_id(talentId);
+            }
+            experienceService.saveBatch(experienceList);
         }
     }
 }

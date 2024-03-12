@@ -1,11 +1,16 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
 import com.five.employnet.config.CorsConfig;
+import com.five.employnet.entity.EducationExperience;
+import com.five.employnet.entity.Experience;
 import com.five.employnet.entity.Talent;
+import com.five.employnet.service.EducationExperienceService;
+import com.five.employnet.service.ExperienceService;
 import com.five.employnet.service.TalentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +25,13 @@ import java.util.Map;
 public class TalentController {
 
     final private TalentService talentService;
+    final private ExperienceService experienceService;
+    final private EducationExperienceService educationExperienceService;
 
-    public TalentController(TalentService talentService) {
+    public TalentController(TalentService talentService, ExperienceService experienceService, EducationExperienceService educationExperienceService) {
         this.talentService = talentService;
+        this.experienceService = experienceService;
+        this.educationExperienceService = educationExperienceService;
     }
 
 
@@ -36,7 +45,8 @@ public class TalentController {
 
     @PostMapping("/save")
     public R<Talent> saveOne(@RequestBody Talent talent) {
-        String userId = talent.getUser_id();;
+        String userId = talent.getUser_id();
+        ;
         Talent t = talentService.getTalentByUserId(userId);
         if (t == null) {
             talentService.saveOneTalent(talent);
@@ -57,13 +67,8 @@ public class TalentController {
         Page<Talent> talentPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Talent> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
         talentLambdaQueryWrapper
-                .like(major != null && !major.isEmpty(), Talent::getMajor, major)
-                .like(home_location != null && !home_location.isEmpty(), Talent::getHome_location, home_location)
-                .like(education_level != null && !education_level.isEmpty(), Talent::getEduction_level, education_level)
-                .like(sex != null && !sex.isEmpty(), Talent::getSex, sex)
                 .like(state != null && !state.isEmpty(), Talent::getState, state)
-                .like(job_intention != null && !job_intention.isEmpty(), Talent::getJob_intention, job_intention)
-                .like(name != null && !name.isEmpty(), Talent::getName, name);
+                .like(job_intention != null && !job_intention.isEmpty(), Talent::getJob_intention, job_intention);
         talentService.page(talentPage, talentLambdaQueryWrapper);
         List<Talent> talentList = talentPage.getRecords();
 //
@@ -79,17 +84,7 @@ public class TalentController {
         Page<Talent> talentPage = new Page<>(page, pageSize);
         LambdaQueryWrapper<Talent> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
         talentLambdaQueryWrapper
-                .like(prompt != null, Talent::getMajor, prompt)
-                .or()
-                .like(prompt != null, Talent::getName, prompt)
-                .or()
                 .like(prompt != null, Talent::getSelf_introduce, prompt)
-                .or()
-                .like(prompt != null, Talent::getHome_location, prompt)
-                .or()
-                .like(prompt != null, Talent::getEduction_level, prompt)
-                .or()
-                .like(prompt != null, Talent::getSex, prompt)
                 .or()
                 .like(prompt != null, Talent::getState, prompt)
                 .or()
@@ -126,9 +121,39 @@ public class TalentController {
         return R.success(talent);
     }
 
+    @PostMapping("/update/intention")
+    public R<Talent> updateIntentionById(@RequestBody Talent talent) {
+        UpdateWrapper<Talent> wrapper = new UpdateWrapper<>();
+        wrapper.eq("talent_id", talent.getTalent_id()).set("job_intention", talent.getJob_intention());
+        talentService.update(wrapper);
+        return R.success(talent);
+    }
+
+    @PostMapping("/update/introduction")
+    public R<Talent> updateIntroductionById(@RequestBody Talent talent) {
+        UpdateWrapper<Talent> wrapper = new UpdateWrapper<>();
+        wrapper.eq("talent_id", talent.getTalent_id()).set("self_introduce", talent.getSelf_introduce());
+        talentService.update(wrapper);
+        return R.success(talent);
+    }
+
+    @PostMapping("/update/state")
+    public R<Talent> updateStateById(@RequestBody Talent talent) {
+        UpdateWrapper<Talent> wrapper = new UpdateWrapper<>();
+        wrapper.eq("talent_id", talent.getTalent_id()).set("state", talent.getState());
+        talentService.update(wrapper);
+        return R.success(talent);
+    }
+
     @GetMapping
     public R<Talent> getTalent() {
         String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        return R.success(talent);
+    }
+
+    @GetMapping("/by/userId")
+    public R<Talent> getTalentByUserId(@RequestParam("userId") String userId) {
         Talent talent = talentService.getTalentByUserId(userId);
         return R.success(talent);
     }
@@ -161,5 +186,47 @@ public class TalentController {
     public R<Integer> number() {
         int count = talentService.count();
         return R.success(count);
+    }
+
+    @PostMapping("/add/experience")
+    public R<String> addExperience(@RequestBody Experience experience) {
+        String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        experience.setTalent_id(talent.getTalent_id());
+        experienceService.save(experience);
+        return R.success("保存成功");
+    }
+
+    @PostMapping("/update/experience")
+    public R<String> updateExperience(@RequestBody Experience experience) {
+        experienceService.updateById(experience);
+        return R.success("修改成功");
+    }
+
+    @DeleteMapping("/delete/experience")
+    public R<String> deleteExperience(@RequestParam("id") String id) {
+        experienceService.removeById(id);
+        return R.success("删除成功");
+    }
+
+    @PostMapping("/add/education_experience")
+    public R<String> addEducationExperience(@RequestBody EducationExperience experience) {
+        String userId = BaseContext.getCurrentId();
+        Talent talent = talentService.getTalentByUserId(userId);
+        experience.setTalent_id(talent.getTalent_id());
+        educationExperienceService.save(experience);
+        return R.success("保存成功");
+    }
+
+    @PostMapping("/update/education_experience")
+    public R<String> updateEducationExperience(@RequestBody EducationExperience experience) {
+        educationExperienceService.updateById(experience);
+        return R.success("修改成功");
+    }
+
+    @DeleteMapping("/delete/education_experience")
+    public R<String> deleteEducationExperience(@RequestParam("id") String id) {
+        educationExperienceService.removeById(id);
+        return R.success("删除成功");
     }
 }

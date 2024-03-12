@@ -23,7 +23,7 @@ public class User implements Serializable {
     private LocalDate birthday;
     private String marriage;
     private String education;
-    private String experience;
+    private String location;
     private String user_class;
     private String username;
     private String password;

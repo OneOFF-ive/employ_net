@@ -15,6 +15,7 @@ public class UserDto {
     private LocalDate birthday;
     private String marriage;
     private String education;
-    private String experience;
     private String user_class;
+    private String location;
+
 }
