@@ -16,9 +16,7 @@ public class InterviewView extends Interview {
 
     private String company_name;
     private String company_icon;
-
     private String job_title;
-
     private String talent_name;
     private String talent_photo;
     private String talent_phone;

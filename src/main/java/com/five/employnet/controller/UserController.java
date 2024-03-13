@@ -203,6 +203,16 @@ public class UserController {
         return R.success(resInfo);
     }
 
+    @GetMapping("/job_collection/count")
+    public R<Integer> getUserCollectionCount() {
+        String userId = BaseContext.getCurrentId();
+
+        LambdaQueryWrapper<JobCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobCollection::getUser_id, userId);
+        int count = jobCollectionService.count(queryWrapper);
+        return R.success(count);
+    }
+
     //用户收藏一个职位
     @PostMapping("/collect_job")
     public R<String> collectJob(@RequestBody Map<String, String> requestBody) {

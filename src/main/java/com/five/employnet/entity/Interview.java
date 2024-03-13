@@ -16,15 +16,11 @@ public class Interview implements Serializable {
     private String id;
     private String address;
     private String company_id;
-    private String interview_info;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime interview_time;
+    private String interview_time;
     private String job_id;
-    private boolean receive;
-    private boolean reject;
     private String talent_id;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime send_time;
     private String info;
-    private String style;
+    private String status;
 }

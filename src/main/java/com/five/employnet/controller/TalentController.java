@@ -5,13 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
-import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.EducationExperience;
 import com.five.employnet.entity.Experience;
 import com.five.employnet.entity.Talent;
 import com.five.employnet.service.EducationExperienceService;
 import com.five.employnet.service.ExperienceService;
 import com.five.employnet.service.TalentService;
+import com.five.employnet.service.TalentViewService;
+import com.five.employnet.view.TalentView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +26,13 @@ import java.util.Map;
 public class TalentController {
 
     final private TalentService talentService;
+    final private TalentViewService talentViewService;
     final private ExperienceService experienceService;
     final private EducationExperienceService educationExperienceService;
 
-    public TalentController(TalentService talentService, ExperienceService experienceService, EducationExperienceService educationExperienceService) {
+    public TalentController(TalentService talentService, TalentViewService talentViewService, ExperienceService experienceService, EducationExperienceService educationExperienceService) {
         this.talentService = talentService;
+        this.talentViewService = talentViewService;
         this.experienceService = experienceService;
         this.educationExperienceService = educationExperienceService;
     }
@@ -56,21 +59,21 @@ public class TalentController {
     }
 
     @GetMapping("/page")
-    public R<Page<Talent>> getPage(@RequestParam int page, @RequestParam int pageSize,
-                                   String home_location,
-                                   String education_level,
-                                   String sex,
-                                   String state,
-                                   String job_intention,
-                                   String major,
-                                   String name) {
-        Page<Talent> talentPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Talent> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    public R<Page<TalentView>> getPage(@RequestParam int page, @RequestParam int pageSize,
+                                       String home_location,
+                                       String education_level,
+                                       String sex,
+                                       String state,
+                                       String job_intention,
+                                       String major,
+                                       String name) {
+        Page<TalentView> talentPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<TalentView> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
         talentLambdaQueryWrapper
                 .like(state != null && !state.isEmpty(), Talent::getState, state)
                 .like(job_intention != null && !job_intention.isEmpty(), Talent::getJob_intention, job_intention);
-        talentService.page(talentPage, talentLambdaQueryWrapper);
-        List<Talent> talentList = talentPage.getRecords();
+        talentViewService.page(talentPage, talentLambdaQueryWrapper);
+        List<TalentView> talentList = talentPage.getRecords();
 //
 //        for (Talent talent : talentList) {
 //            talentService.completeTalent(talent);
@@ -80,17 +83,17 @@ public class TalentController {
     }
 
     @GetMapping("/search")
-    public R<Page<Talent>> search(@RequestParam int page, @RequestParam int pageSize, String prompt) {
-        Page<Talent> talentPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<Talent> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+    public R<Page<TalentView>> search(@RequestParam int page, @RequestParam int pageSize, String prompt) {
+        Page<TalentView> talentPage = new Page<>(page, pageSize);
+        LambdaQueryWrapper<TalentView> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
         talentLambdaQueryWrapper
                 .like(prompt != null, Talent::getSelf_introduce, prompt)
                 .or()
                 .like(prompt != null, Talent::getState, prompt)
                 .or()
                 .like(prompt != null, Talent::getJob_intention, prompt);
-        talentService.page(talentPage, talentLambdaQueryWrapper);
-        List<Talent> talentList = talentPage.getRecords();
+        talentViewService.page(talentPage, talentLambdaQueryWrapper);
+        List<TalentView> talentList = talentPage.getRecords();
 //
 //        for (Talent talent : talentList) {
 //            talentService.completeTalent(talent);
@@ -149,6 +152,12 @@ public class TalentController {
     public R<Talent> getTalent() {
         String userId = BaseContext.getCurrentId();
         Talent talent = talentService.getTalentByUserId(userId);
+        return R.success(talent);
+    }
+
+    @GetMapping("/view")
+    public R<Talent> getTalentView(@RequestParam("id") String id) {
+        TalentView talent = talentViewService.getById(id);
         return R.success(talent);
     }
 
