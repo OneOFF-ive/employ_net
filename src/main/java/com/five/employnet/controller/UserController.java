@@ -56,8 +56,24 @@ public class UserController {
     }
 
     @GetMapping("/auth")
-    public R<String> auth() {
-        return R.success("OK");
+    public R<UserDto> auth() {
+        String userId = BaseContext.getCurrentId();
+        User user = userService.getById(userId);
+
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        R<UserDto> res = R.success(userDto);
+
+        Company company = companyService.getCompanyByUserId(userId);
+        if (company != null) {
+            res.add("company", company);
+        }
+
+        Talent talent = talentService.getTalentByUserId(userId);
+        if (talent != null) {
+            res.add("talent", talent);
+        }
+        return res;
     }
 
     @PostMapping("/update")
