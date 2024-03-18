@@ -1,5 +1,7 @@
 package com.five.employnet.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -7,6 +9,7 @@ import lombok.Data;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @TableName("job")
@@ -47,4 +50,8 @@ public class Job implements Serializable {
     private String location;
     private String remark;
     private String action;
+
+    //更新时间
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime update_time;
 }

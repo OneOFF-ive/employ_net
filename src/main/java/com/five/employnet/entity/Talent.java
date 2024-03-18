@@ -1,11 +1,13 @@
 package com.five.employnet.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -41,4 +43,7 @@ public class Talent implements Serializable {
     private String job_intention;
 
     private String status;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime update_time;
 }

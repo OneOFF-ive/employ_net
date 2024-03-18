@@ -1,6 +1,7 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
@@ -46,21 +47,43 @@ public class JobController {
     @GetMapping("/page")
     public R<Page<JobView>> getPage(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, String prompt) {
         Page<JobView> pageInfo = new Page<>(page, pageSize);
-        LambdaQueryWrapper<JobView> jobLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        QueryWrapper<JobView> jobLambdaQueryWrapper = new QueryWrapper<>();
         jobLambdaQueryWrapper
-                .like(prompt != null, JobView::getJob_lab, prompt)
+                .like(prompt != null, "job_lab", prompt)
                 .or()
-                .like(prompt != null, JobView::getCompany_class, prompt)
+                .like(prompt != null, "company_class", prompt)
                 .or()
-                .like(prompt != null, JobView::getCompany, prompt)
+                .like(prompt != null, "company", prompt)
                 .or()
-                .like(prompt != null, JobView::getBusiness, prompt)
+                .like(prompt != null, "business", prompt)
                 .or()
-                .like(prompt != null, JobView::getAddress, prompt)
+                .like(prompt != null, "address", prompt)
                 .or()
-                .like(prompt != null, Job::getTitle, prompt)
-                .or()
-                .like(prompt != null, Job::getAction, prompt);
+                .like(prompt != null, "title", prompt)
+                .orderBy(true, false, "RAND()");
+        jobViewService.page(pageInfo, jobLambdaQueryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    @GetMapping("/latest")
+    public R<Page<JobView>> getLatest(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize) {
+        Page<JobView> pageInfo = new Page<>(page, pageSize);
+        QueryWrapper<JobView> jobLambdaQueryWrapper = new QueryWrapper<>();
+        jobLambdaQueryWrapper
+                .orderBy(true, false, "update_time");
+        jobViewService.page(pageInfo, jobLambdaQueryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    @GetMapping("/near")
+    public R<Page<JobView>> getNear(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, @RequestParam("city") String city) {
+        Page<JobView> pageInfo = new Page<>(page, pageSize);
+        QueryWrapper<JobView> jobLambdaQueryWrapper = new QueryWrapper<>();
+        jobLambdaQueryWrapper
+                .like("city", city)
+                .orderBy(true, false, "RAND()");
         jobViewService.page(pageInfo, jobLambdaQueryWrapper);
 
         return R.success(pageInfo);
@@ -118,8 +141,10 @@ public class JobController {
 
     @GetMapping("/from/company")
     public R<List<JobView>> getCompanyJobList(@RequestParam("company_id") String company_id) {
-        LambdaQueryWrapper<JobView> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(JobView::getCompany_id, company_id);
+        QueryWrapper<JobView> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .eq("company_id", company_id)
+                .orderBy(true, false, "update_time");
         List<JobView> jobList = jobViewService.list(queryWrapper);
         return R.success(jobList);
     }
