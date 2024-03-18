@@ -49,7 +49,6 @@ public class TalentController {
     @PostMapping("/save")
     public R<Talent> saveOne(@RequestBody Talent talent) {
         String userId = talent.getUser_id();
-        ;
         Talent t = talentService.getTalentByUserId(userId);
         if (t == null) {
             talentService.saveOneTalent(talent);
