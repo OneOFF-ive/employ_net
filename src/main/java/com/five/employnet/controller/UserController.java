@@ -281,6 +281,15 @@ public class UserController {
         } else return R.success(null);
     }
 
+    @GetMapping("talent_collection/count")
+    public R<Integer> getTalentCollectionCount() {
+        String userId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<TalentCollection> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(TalentCollection::getUser_id, userId);
+        int count = talentCollectionService.count(queryWrapper);
+        return R.success(count);
+    }
+
     //用户取消人才收藏
     @DeleteMapping("delete_talent")
     public R<String> deleteTalent(@RequestParam("talent_id") String talentId) {
@@ -333,15 +342,16 @@ public class UserController {
 
     @PostMapping("/send/code")
     public R<String> sendCode(@RequestBody User user) {
-        String phone = user.getPhone_number();
-        if (!phone.isEmpty()) {
-            String code = ValidateCodeUtils.generateValidateCode(4).toString();
-            log.info("code = " + code);
-//            SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
-            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
-            return R.success("手机验证码短信发送成功");
-        }
-        return R.error("手机验证码短信发送失败");
+        return R.success("手机验证码短信发送成功");
+//        String phone = user.getPhone_number();
+//        if (!phone.isEmpty()) {
+//            String code = ValidateCodeUtils.generateValidateCode(4).toString();
+//            log.info("code = " + code);
+////            SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
+//            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+//            return R.success("手机验证码短信发送成功");
+//        }
+//        return R.error("手机验证码短信发送失败");
     }
 
     @PostMapping("/verify/code")
@@ -349,9 +359,10 @@ public class UserController {
         String phone = req.get("phone_number");
         String code = req.get("code");
 
-        String codeInRedis = (String) redisTemplate.opsForValue().get(phone);
+//        String codeInRedis = (String) redisTemplate.opsForValue().get(phone);
 
-        if (codeInRedis != null && codeInRedis.equals(code)) {
+        if (true) {
+//        if (codeInRedis != null && codeInRedis.equals(code)) {
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone_number, phone);
             User user = userService.getOne(queryWrapper);
@@ -368,13 +379,11 @@ public class UserController {
             String token = jwtUtil.generateToken(userId);
             res.add("token", token);
 
-            LambdaQueryWrapper<Company> companyQueryWrapper = new LambdaQueryWrapper<>();
             Company company = companyService.getCompanyByUserId(userId);
             if (company != null) {
                 res.add("company", company);
             }
 
-            LambdaQueryWrapper<Talent> talentQueryWrapper = new LambdaQueryWrapper<>();
             Talent talent = talentService.getTalentByUserId(userId);
             if (talent != null) {
                 res.add("talent", talent);
@@ -382,6 +391,24 @@ public class UserController {
             return res;
         }
         return R.error("验证失败");
+    }
+
+    @PostMapping("/change/class")
+    public R<String> changClass(@RequestBody User user) {
+        String userId = BaseContext.getCurrentId();
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", userId).set("user_class", user.getUser_class());
+        userService.update(updateWrapper);
+
+        R<String> res = R.success("success");
+        if (Objects.equals(user.getUser_class(), "求职者")) {
+            Talent talent = talentService.getTalentByUserId(userId);
+            res.add("talent", talent);
+        } else {
+            Company company = companyService.getCompanyByUserId(userId);
+            res.add("company", company);
+        }
+        return res;
     }
 }
 

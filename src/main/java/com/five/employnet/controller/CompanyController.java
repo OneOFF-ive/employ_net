@@ -90,6 +90,13 @@ public class CompanyController {
         else return R.error(null);
     }
 
+    @GetMapping("/id")
+    public R<Company> getCompanyById(@RequestParam("id") String id) {
+        Company company = companyService.getById(id);
+        if (company != null) return R.success(company);
+        else return R.error(null);
+    }
+
     @DeleteMapping
     public R<String> delete() {
         String userId = BaseContext.getCurrentId();

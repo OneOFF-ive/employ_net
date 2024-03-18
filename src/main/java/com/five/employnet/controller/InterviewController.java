@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.five.employnet.common.BaseContext;
 import com.five.employnet.common.R;
-import com.five.employnet.config.CorsConfig;
 import com.five.employnet.entity.Company;
 import com.five.employnet.entity.Interview;
 import com.five.employnet.entity.Talent;
@@ -44,7 +43,7 @@ public class InterviewController {
         String userId = BaseContext.getCurrentId();
         Talent talent = talentService.getTalentWithoutDetailByUserId(userId);
         if (talent != null) {
-            LambdaQueryWrapper<InterviewView> queryWrapper = filterInterview(status, talent);
+            LambdaQueryWrapper<InterviewView> queryWrapper = filterTalentInterview(status, talent);
             List<InterviewView> interviewViewList = interviewViewService.list(queryWrapper);
             return R.success(interviewViewList);
         } else {
@@ -57,7 +56,7 @@ public class InterviewController {
         String userId = BaseContext.getCurrentId();
         Talent talent = talentService.getTalentWithoutDetailByUserId(userId);
         if (talent != null) {
-            LambdaQueryWrapper<InterviewView> queryWrapper = filterInterview(status, talent);
+            LambdaQueryWrapper<InterviewView> queryWrapper = filterTalentInterview(status, talent);
             int count = interviewViewService.count(queryWrapper);
             return R.success(count);
         } else {
@@ -65,7 +64,7 @@ public class InterviewController {
         }
     }
 
-    private LambdaQueryWrapper<InterviewView> filterInterview(@RequestParam("status") String status, Talent talent) {
+    private LambdaQueryWrapper<InterviewView> filterTalentInterview(@RequestParam("status") String status, Talent talent) {
         String talentId = talent.getTalent_id();
         LambdaQueryWrapper<InterviewView> queryWrapper = new LambdaQueryWrapper<>();
         if (Objects.equals(status, "待面试")) {
@@ -83,11 +82,8 @@ public class InterviewController {
         String userId = BaseContext.getCurrentId();
         Company company = companyService.getCompanyByUserId(userId);
         if (company != null) {
-            String companyId = company.getCompany_id();
-            LambdaQueryWrapper<InterviewView> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper
-                    .eq(Interview::getCompany_id, companyId)
-                    .eq(Interview::getStatus, status);
+            LambdaQueryWrapper<InterviewView> queryWrapper = filterCompanyInterview(status, company);
+
             List<InterviewView> interviewViewList = interviewViewService.list(queryWrapper);
             return R.success(interviewViewList);
         } else {
@@ -95,16 +91,24 @@ public class InterviewController {
         }
     }
 
+    private LambdaQueryWrapper<InterviewView> filterCompanyInterview(@RequestParam("status") String status, Company company) {
+        String companyId = company.getCompany_id();
+        LambdaQueryWrapper<InterviewView> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Interview::getCompany_id, companyId);
+        if (Objects.equals(status, "待面试")) {
+            queryWrapper.eq(Interview::getStatus, "待面试");
+        } else {
+            queryWrapper.eq(Interview::getStatus, "待处理");
+        }
+        return queryWrapper;
+    }
+
     @GetMapping("/company/count")
     public R<Integer> getCompanyInterviewCount(@RequestParam("status") String status) {
         String userId = BaseContext.getCurrentId();
         Company company = companyService.getCompanyByUserId(userId);
         if (company != null) {
-            String companyId = company.getCompany_id();
-            LambdaQueryWrapper<InterviewView> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper
-                    .eq(Interview::getCompany_id, companyId)
-                    .eq(Interview::getStatus, status);
+            LambdaQueryWrapper<InterviewView> queryWrapper = filterCompanyInterview(status, company);
             int count = interviewViewService.count(queryWrapper);
             return R.success(count);
         } else {

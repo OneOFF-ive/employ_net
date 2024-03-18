@@ -40,8 +40,7 @@ public class JobController {
             job.setCompany_id(companyId);
             jobService.saveJob(job, company);
             return R.success(job);
-        }
-        else return R.error("公司不存在");
+        } else return R.error("公司不存在");
     }
 
     @GetMapping("/page")
@@ -57,7 +56,7 @@ public class JobController {
                 .or()
                 .like(prompt != null, JobView::getBusiness, prompt)
                 .or()
-                .like(prompt !=null, JobView::getAddress, prompt)
+                .like(prompt != null, JobView::getAddress, prompt)
                 .or()
                 .like(prompt != null, Job::getTitle, prompt)
                 .or()
@@ -116,4 +115,14 @@ public class JobController {
         Job job = jobViewService.getOne(queryWrapper);
         return R.success(job);
     }
+
+    @GetMapping("/from/company")
+    public R<List<JobView>> getCompanyJobList(@RequestParam("company_id") String company_id) {
+        LambdaQueryWrapper<JobView> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(JobView::getCompany_id, company_id);
+        List<JobView> jobList = jobViewService.list(queryWrapper);
+        return R.success(jobList);
+    }
+
+
 }
