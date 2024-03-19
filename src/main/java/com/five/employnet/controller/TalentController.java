@@ -1,6 +1,7 @@
 package com.five.employnet.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.five.employnet.common.BaseContext;
@@ -59,47 +60,56 @@ public class TalentController {
 
     @GetMapping("/page")
     public R<Page<TalentView>> getPage(@RequestParam int page, @RequestParam int pageSize,
-                                       String home_location,
-                                       String education_level,
-                                       String sex,
                                        String state,
-                                       String job_intention,
-                                       String major,
-                                       String name) {
+                                       String job_intention) {
         Page<TalentView> talentPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<TalentView> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        QueryWrapper<TalentView> talentLambdaQueryWrapper = new QueryWrapper<>();
         talentLambdaQueryWrapper
-                .like(state != null && !state.isEmpty(), Talent::getState, state)
-                .like(job_intention != null && !job_intention.isEmpty(), Talent::getJob_intention, job_intention);
+                .like(state != null && !state.isEmpty(), "state", state)
+                .like(job_intention != null && !job_intention.isEmpty(), "job_intention", job_intention)
+                .orderBy(true, false, "RAND()");
         talentViewService.page(talentPage, talentLambdaQueryWrapper);
-        List<TalentView> talentList = talentPage.getRecords();
-//
-//        for (Talent talent : talentList) {
-//            talentService.completeTalent(talent);
-//        }
-
         return R.success(talentPage);
     }
 
     @GetMapping("/search")
     public R<Page<TalentView>> search(@RequestParam int page, @RequestParam int pageSize, String prompt) {
         Page<TalentView> talentPage = new Page<>(page, pageSize);
-        LambdaQueryWrapper<TalentView> talentLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        QueryWrapper<TalentView> talentLambdaQueryWrapper = new QueryWrapper<>();
         talentLambdaQueryWrapper
-                .like(prompt != null, Talent::getSelf_introduce, prompt)
+                .like(prompt != null, "self_introduce", prompt)
                 .or()
-                .like(prompt != null, Talent::getState, prompt)
+                .like(prompt != null, "state", prompt)
                 .or()
-                .like(prompt != null, Talent::getJob_intention, prompt);
+                .like(prompt != null, "job_intention", prompt)
+                .orderBy(true, false, "RAND()");
         talentViewService.page(talentPage, talentLambdaQueryWrapper);
-        List<TalentView> talentList = talentPage.getRecords();
-//
-//        for (Talent talent : talentList) {
-//            talentService.completeTalent(talent);
-//        }
 
         return R.success(talentPage);
     }
+
+    @GetMapping("/latest")
+    public R<Page<TalentView>> getLatest(@RequestParam int page, @RequestParam int pageSize) {
+        Page<TalentView> talentPage = new Page<>(page, pageSize);
+        QueryWrapper<TalentView> talentLambdaQueryWrapper = new QueryWrapper<>();
+        talentLambdaQueryWrapper
+                .orderBy(true, false, "update_time");
+        talentViewService.page(talentPage, talentLambdaQueryWrapper);
+        return R.success(talentPage);
+    }
+
+    @GetMapping("/near")
+    public R<Page<TalentView>> getLatest(@RequestParam int page, @RequestParam int pageSize, @RequestParam("city") String city) {
+        Page<TalentView> talentPage = new Page<>(page, pageSize);
+        QueryWrapper<TalentView> talentLambdaQueryWrapper = new QueryWrapper<>();
+        talentLambdaQueryWrapper
+                .like("location", city)
+                .orderBy(true, false, "update_time");
+        talentViewService.page(talentPage, talentLambdaQueryWrapper);
+        return R.success(talentPage);
+    }
+
+
 
     @DeleteMapping
     public R<String> delete() {

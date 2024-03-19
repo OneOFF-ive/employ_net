@@ -21,4 +21,5 @@ public class JobView extends Job {
     private String company;
     private String avatar_url;
     private String state;
+    private String user_id;
 }
