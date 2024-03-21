@@ -89,6 +89,21 @@ public class JobController {
         return R.success(pageInfo);
     }
 
+    @GetMapping("/recommend")
+    public R<Page<JobView>> getRecommend(@RequestParam("page") int page, @RequestParam("pageSize") int pageSize, @RequestParam("keys") List<String> keys) {
+        Page<JobView> pageInfo = new Page<>(page, pageSize);
+        QueryWrapper<JobView> jobLambdaQueryWrapper = new QueryWrapper<>();
+        jobLambdaQueryWrapper
+                .like("job_lab", keys.get(0))
+                .or()
+                .like("job_lab", keys.get(1))
+                .or()
+                .like("job_lab", keys.get(2));
+        jobViewService.page(pageInfo, jobLambdaQueryWrapper);
+
+        return R.success(pageInfo);
+    }
+
     @PutMapping
     public R<Job> update(@RequestBody Job newJob) {
         return R.success(jobService.updateJob(newJob));
