@@ -3,10 +3,7 @@ package com.five.employnet.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.five.employnet.common.BaseContext;
-import com.five.employnet.common.JwtUtil;
-import com.five.employnet.common.R;
-import com.five.employnet.common.ValidateCodeUtils;
+import com.five.employnet.common.*;
 import com.five.employnet.dto.UserDto;
 import com.five.employnet.entity.*;
 import com.five.employnet.service.*;
@@ -358,16 +355,15 @@ public class UserController {
 
     @PostMapping("/send/code")
     public R<String> sendCode(@RequestBody User user) {
-        return R.success("手机验证码短信发送成功");
-//        String phone = user.getPhone_number();
-//        if (!phone.isEmpty()) {
-//            String code = ValidateCodeUtils.generateValidateCode(4).toString();
-//            log.info("code = " + code);
-////            SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
-//            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
-//            return R.success("手机验证码短信发送成功");
-//        }
-//        return R.error("手机验证码短信发送失败");
+        String phone = user.getPhone_number();
+        if (!phone.isEmpty()) {
+            String code = ValidateCodeUtils.generateValidateCode(4).toString();
+            log.info("code = " + code);
+            SMSUtils.sendMessage("阿里云短信测试", "SMS_154950909", phone, code);
+            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
+            return R.success("手机验证码短信发送成功");
+        }
+        return R.error("手机验证码短信发送失败");
     }
 
     @PostMapping("/verify/code")
@@ -375,10 +371,9 @@ public class UserController {
         String phone = req.get("phone_number");
         String code = req.get("code");
 
-//        String codeInRedis = (String) redisTemplate.opsForValue().get(phone);
+        String codeInRedis = (String) redisTemplate.opsForValue().get(phone);
 
-        if (true) {
-//        if (codeInRedis != null && codeInRedis.equals(code)) {
+        if (codeInRedis != null && codeInRedis.equals(code)) {
             LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(User::getPhone_number, phone);
             User user = userService.getOne(queryWrapper);
