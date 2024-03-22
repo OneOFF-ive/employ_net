@@ -17,25 +17,4 @@ import java.util.List;
 @SpringBootTest
 @Slf4j
 class EmployNetApplicationTests {
-    @Autowired
-    UserService userService;
-    @Autowired
-    JwtUtil jwtUtil;
-    @Autowired
-    JobService jobService;
-
-    @Test
-    void contextLoads() {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getOpen_id, "oX6_d5fOfDXSO1PsGYRpbBS7sXOo");
-        User user = userService.getOne(queryWrapper);
-        log.info(user.toString());
-    }
-
-    @Test
-    void test() {
-        List<Integer> list = new ArrayList<>();
-        list.add(1);
-        log.info(list.toString());
-    }
 }
